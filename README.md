@@ -1,5 +1,7 @@
 # Team Nestlé CSCI470 Project
 
+![linus-torvalds-innovation-hard-work](https://user-images.githubusercontent.com/15916367/94550311-c1dab400-0210-11eb-92df-8e0064d639de.jpg)
+
 ## Members:
 - Andrew Darling
 - Eric Hayes
