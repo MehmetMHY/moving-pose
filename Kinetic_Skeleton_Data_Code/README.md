@@ -16,7 +16,7 @@
 
 ## Installs:
 - Kinetic v1.8 drivers: https://www.microsoft.com/en-us/download/details.aspx?id=40277
-- Kinetic v1.8 toolKit: https://www.microsoft.com/en-us/download/details.aspx?id=40276-
+- Kinetic v1.8 toolKit: https://www.microsoft.com/en-us/download/details.aspx?id=40276
 - Visual Studio 2019:  https://visualstudio.microsoft.com/downloads/
 
 ## About:
