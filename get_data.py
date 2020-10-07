@@ -26,7 +26,7 @@ def frameOnly(frame, values):
     for i in range(len(values)):
         if(values[i][0] == frame):
             x = values[i]
-            x.pop(0) ; x.pop(0)
+            x.pop(0)
             result.append(x)
     return result
 
