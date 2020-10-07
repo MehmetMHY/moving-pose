@@ -15,8 +15,6 @@ class Skeleton:
     def __iter__(self):
         return iter([(self._joints[j[0]], self._joints[j[1]]) for j in self.__segments])
 
-    def get_iter(self):
-        return self.__segments
 
     def get_joints(self):
         return self._joints
