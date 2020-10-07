@@ -4,7 +4,7 @@ import numpy as np
 
 # find distance between 2 3D points
 def distance(point1, point2):
-    d = np.sqrt(np.square(point1 - point2))
+    d = np.sqrt(np.sum(np.square(point1 - point2)))
     return d
 
 
