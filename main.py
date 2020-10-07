@@ -9,9 +9,13 @@ temp = train["a04_s06_e02_skeleton_proj.txt"]
 def printList(items):
     p = 0
     for i in range(len(items)):
-        print(items[i])
+        for p in range(len(items[i])):
+            #print(len(items[i][p]))
+            print(items[i][p])
+            # if(len(items[i][p]) != 5):
+            #     print("FUCK")
         p = p + 1
-    print("------->", p)
+    print("------->", p, i)
 
 for key, value in train.items():
     if(key == "a04_s06_e02_skeleton_proj.txt"):
