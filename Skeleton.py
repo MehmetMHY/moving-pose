@@ -4,7 +4,6 @@ class Skeleton:
     def __init__(self, joints_array):
         self._joints = {int(i[0]): i[1:] for i in joints_array}
         self.__BF_ITERATION = [1, 2, 13, 17, 3, 14, 18, 4, 5, 9, 15, 19, 6, 10, 16, 20, 7, 11, 8, 12]
-        print(self.__BF_ITERATION)
 
     # iterate through with for i in skeleton_instance
     def __iter__(self):
