@@ -13,19 +13,15 @@ def distance(point1, point2):
                 math.pow(z2 - z1, 2)* 1.0)
     return d
 
-def avg_dis_r(data, start_to_end=[(1, 13), (1, 2), (1, 17), (13, 14), (2, 3), (17, 18), (14, 15), (3, 5), (3, 4), (3, 9), (18, 19), (15, 16), (5, 6), (9, 10), (19, 20), (6, 7), (10, 11), (7, 8), (11, 12)]):
-    final = []
-    for person, frames_poses in data.items():
-        people = []
-        for i in range(len(frames_poses)):
-            frames = []
-            for j in range(len(start_to_end)):
-                start = frames_poses[i][start_to_end[j][0]-1][2:]
-                end = frames_poses[i][start_to_end[j][1]-1][2:]
-                frames.append(distance(start, end))
-            people.append(frames)
-        people = np.array(people)
-        final.append(np.mean(people, axis=0))
+def avg_dis_r(data):
+    bodies = np.array()
+    for file_name, action_frames in data.items():
+        for frame in action_frames:
+            body = []
+            skele = Skeleton(np.array(frame[1:]))
+            for start, end in skele:
+                segment = distance(start, end)
+                body.append(segment)
+            bodies = np.append(bodies, np.array(body))
 
-    final = np.array(final)
-    return np.mean(final, axis=0)
+    return np.mean(bodies, axis=0)
