@@ -23,3 +23,10 @@ def avg_dis_r(data):
     R = np.mean(np.array(bodies), axis=0)
     return R / LA.norm(R)
 
+# generates R using the training data
+def generate_R():
+    train = gd.loadData("train.p")
+    R = avg_dis_r(train)
+    gd.saveData("R.p", R)
+    print("R.p has been generated")
+
