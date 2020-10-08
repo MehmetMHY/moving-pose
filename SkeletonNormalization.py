@@ -31,7 +31,7 @@ def normalize_skeleton(joint_data, R):
     for joints, r in zip(skele, R):
         start, end = joints
         norm_end_joint = normalize_segment(start, reg_to_norm_dict[str(start)], end, r)
-        reg_to_norm_dict[end] = norm_end_joint
+        reg_to_norm_dict[str(end)] = norm_end_joint
         norm_joints.append(norm_end_joint)
 
     return np.array(norm_joints).reshape((20, 3))
