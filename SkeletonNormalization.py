@@ -23,11 +23,10 @@ def normalize_segment(start, start_norm, end, r):
 def normalize_skeleton(joint_data, R):
     joints = zero_to_hip(joint_data)  # TODO check if hip should always be at (0, 0, 0)
     skele = Skeleton(joints)
-    norm_joints = [skele.get_joints()[1]]  # list of normalized joint locations
     for joints, r in zip(skele, R):
         start, end = joints
         norm_joints.append(normalize_segment(start, norm_joints[-1], end, r))
-    return np.full((20, 3), norm_joints)
+    return np.array(norm_joints).reshape((20, 3))
 
 
 
