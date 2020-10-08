@@ -21,23 +21,19 @@ def normalize_segment(start, start_norm, end, r):
 
 
 def normalize_skeleton(joint_data, R):
-    joints = zero_to_hip(joint_data)  # TODO check if hip should always be at (0, 0, 0)
+    joints = zero_to_hip(joint_data)
     skele = Skeleton(joints)
-    norm_joints = [skele.get_joints()[1]]
-    reg_to_norm_dict = {
-        str(skele.get_joints()[1]): skele.get_joints()[1]
-    }
-
-    for joints, r in zip(skele, R):
-        start, end = joints
-        norm_end_joint = normalize_segment(start, reg_to_norm_dict[str(start)], end, r)
-        reg_to_norm_dict[str(end)] = norm_end_joint
-        norm_joints.append(norm_end_joint)
-
+    joints = skele.get_joints()
+    norm_joints = list([None] * 20)
+    norm_joints[0] = skele.get_joints()[1]
+    for joint_inds, r in zip(skele.get_segments(), R):
+        start_ind, end_ind = joint_inds
+        start, end = joints[start_ind], joints[end_ind]
+        norm_end_joint = normalize_segment(start, norm_joints[start_ind-1], end, r)
+        norm_joints[end_ind-1] = norm_end_joint
     return np.array(norm_joints).reshape((20, 3))
 
 
-# import get_data as gd
 # from find_R import *
 #
 # train = gd.loadData('train.p')
