@@ -37,23 +37,23 @@ def normalize_skeleton(joint_data, R):
     return np.array(norm_joints).reshape((20, 3))
 
 
-import get_data as gd
-from find_R import *
-
-train = gd.loadData('train.p')
-
-# a08_s01_e01_skeleton_proj.txt         hands raised over head
-# a10_s06_e02_skeleton_proj.txt         wave
-action_data = train["a08_s01_e01_skeleton_proj.txt"]
-print(np.array(action_data).shape)
-print(np.array(action_data)[0,:,:].shape) # frame 1
-
-def get_frame(frame, data):
-    return np.array(data)[frame - 1,:,1:]
-
-test_frame = get_frame(1, action_data)
-R = avg_dis_r(train)
-
-
-
-print(normalize_skeleton(test_frame, R))
+# import get_data as gd
+# from find_R import *
+#
+# train = gd.loadData('train.p')
+#
+# # a08_s01_e01_skeleton_proj.txt         hands raised over head
+# # a10_s06_e02_skeleton_proj.txt         wave
+# action_data = train["a08_s01_e01_skeleton_proj.txt"]
+# print(np.array(action_data).shape)
+# print(np.array(action_data)[0,:,:].shape) # frame 1
+#
+# def get_frame(frame, data):
+#     return np.array(data)[frame - 1,:,1:]
+#
+# test_frame = get_frame(1, action_data)
+# R = avg_dis_r(train)
+#
+#
+#
+# print(normalize_skeleton(test_frame, R))

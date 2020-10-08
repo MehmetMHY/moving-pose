@@ -15,7 +15,7 @@ def avg_dis_r(data):
     for file_name, action_frames in data.items():
         for frame in action_frames:
             body = []
-            skele = s.Skeleton(np.array(frame)[:,1:])
+            skele = s.Skeleton(np.array(frame)[:, 1:])
             for start, end in skele:
                 segment = distance(start, end)
                 body.append(segment)
@@ -23,6 +23,3 @@ def avg_dis_r(data):
     R = np.mean(np.array(bodies), axis=0)
     return R / LA.norm(R)
 
-
-train = gd.loadData('./train.p')
-avg_dis_r(train)
