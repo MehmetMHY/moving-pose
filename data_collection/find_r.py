@@ -1,9 +1,7 @@
-import sys
-sys.path.append('..')
-import Skeleton as s
+from logic import iterators as s
 import numpy as np
 from numpy import linalg as LA
-from Data_Generation import get_data as gd
+from data_collection import get_data as gd
 
 
 # find distance between 2 3D points
@@ -25,10 +23,11 @@ def avg_dis_r(data):
     R = np.mean(np.array(bodies), axis=0)
     return R / LA.norm(R)
 
+
 # generates R using the training data
-def generate_R():
-    train = gd.loadData("../Pickles/train.p")
+def generate_r():
+    train = gd.load_data("../pickle/train.p")
     R = avg_dis_r(train)
-    gd.saveData("../Pickles/R.p", R)
-    print("R.p has been generated")
+    gd.save_data("../pickle/r.p", R)
+    print("r.p has been generated")
 

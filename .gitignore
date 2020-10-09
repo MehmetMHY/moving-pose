@@ -1,9 +1,9 @@
 .DS_Store
-Kinetic_Skeleton_Data_Code/SkeletonBasics-D2D/Debug/
-Kinetic_Skeleton_Data_Code/SkeletonBasics-D2D/.vs/
-Multiview_Action_3D_Dataset/dataset*
+ext/kinect_skeleton_data_code/SkeletonBasics-D2D/Debug/
+ext/kinect_skeleton_data_code/SkeletonBasics-D2D/.vs/
+ext/dataset/dataset*
 Meeting_Notes
 __pycache__
 .idea
 venv
-Ipython_Notebooks/.ipynb_checkpoints
+notebook/.ipynb_checkpoints

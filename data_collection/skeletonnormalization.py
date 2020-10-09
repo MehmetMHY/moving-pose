@@ -1,7 +1,6 @@
 import numpy as np
-from numpy import linalg as LA
-from Skeleton import Skeleton
-import math
+from numpy import linalg
+from logic.iterators import Skeleton
 
 
 # set the hip joint to (0, 0) and shift all other joints accordingly
@@ -16,7 +15,7 @@ def delta_vector(start_pt, end_pt):
 
 def normalize_segment(start, start_norm, end, r):
     d_i = delta_vector(start, end)
-    d_norm_i = r * d_i / LA.norm(d_i)
+    d_norm_i = r * d_i / linalg.norm(d_i)
     return start_norm + d_norm_i
 
 
