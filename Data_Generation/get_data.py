@@ -86,15 +86,15 @@ def main(train_path, test_path):
     train = makeMainDic(train_path)
 
     print("Saving datas...")
-    saveData("test.p", test)
-    saveData("train.p", train)
+    saveData("../Pickles/test.p", test)
+    saveData("../Pickles/train.p", train)
 
     print("Program took", time.time() - start_time, "to run!")
 
 
 if __name__ == "__main__":
     # paths to Test and Train data sets (this can change)
-    test_path = "Multiview_Action_3D_Dataset/dataset_full/Test/"
-    train_path = "Multiview_Action_3D_Dataset/dataset_full/Train/"
+    test_path = "../Multiview_Action_3D_Dataset/dataset_full/Test/"
+    train_path = "../Multiview_Action_3D_Dataset/dataset_full/Train/"
 
     main(train_path, test_path)
