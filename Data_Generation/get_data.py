@@ -93,7 +93,7 @@ def main(train_path, test_path):
 
 
 if __name__ == "__main__":
-    # paths to Test and Train data sets (this can change)
+    # paths to Test and Train data set s (this can change)
     test_path = "../Multiview_Action_3D_Dataset/dataset_full/Test/"
     train_path = "../Multiview_Action_3D_Dataset/dataset_full/Train/"
 
