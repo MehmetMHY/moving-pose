@@ -34,14 +34,14 @@ class ActionClassifier(BaseEstimator):
         """
         return self
 
-    def predict(self, action, action_is_normalized=True):
+    def predict(self, descriptors, descriptors_are_normalized=True):
         """
-        Initialize action classifier
+        Predict action from descriptors
 
         Parameters
         ----------
-        :param action: list of
-        :param action_is_normalized: boolean denoting whether or not action is normalized
+        :param descriptors: ordered list of descriptors describing a pose
+        :param descriptors_are_normalized: boolean denoting whether or not descriptors are normalized
 
         Returns
         -------
