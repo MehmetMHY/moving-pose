@@ -8,3 +8,4 @@ __pycache__
 venv
 notebook/.ipynb_checkpoints
 notebook/skeleton-animation-v2.ipynb
+.testing/Gaussian_Filtering/.ipynb_checkpoints/
