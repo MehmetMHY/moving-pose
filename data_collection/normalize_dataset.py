@@ -54,13 +54,6 @@ for file in train:
 gd.save_data('../pickle/norm_train.p', train)
 
 
-
-
-
-
-
-
-
 actions = {'a01': 'drink',
            'a02': 'eat',
            'a03': 'read-book',
