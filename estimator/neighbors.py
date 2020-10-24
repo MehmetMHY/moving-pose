@@ -45,6 +45,7 @@ class NearestDescriptors(BaseEstimator):
         scoring_KNN = KNeighborsClassifier(n_neighbors=self.n_training_neighbors).fit(X, y)
         for descriptor in X:
             for nearby_action in scoring_KNN.predict_proba(descriptor):
+                pass
 
 
 
