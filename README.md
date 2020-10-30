@@ -9,6 +9,8 @@
 
 ## About:
 - This is the Fall 2020 CSCI470 Semester Project
+- We are implmenting the following research paper for this project: https://openaccess.thecvf.com/content_iccv_2013/papers/Zanfir_The_Moving_Pose_2013_ICCV_paper.pdf
+
 
 ## Project:
 - Topic Area: Supervised Learning, Binary Classification, Support Vector Model (SVM)
