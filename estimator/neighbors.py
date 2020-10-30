@@ -1,6 +1,8 @@
+from collections import defaultdict
+
 from sklearn.base import BaseEstimator
+from sklearn.exceptions import NotFittedError
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.utils.validation import check_X_y
 from logic.metrics import manhattan_temporal_delta_quant
 
 
@@ -28,6 +30,8 @@ class NearestDescriptors(BaseEstimator):
         self.kappa = kappa
         self.is_fit = False
 
+        self._frame_descriptors_dict = defaultdict(list)
+
     def fit(self, X, y, X_is_normalized=True):
         """
         Fit this estimator with provided training data and hyper parameters
@@ -42,18 +46,25 @@ class NearestDescriptors(BaseEstimator):
         -------
         :return: self
         """
-        scoring_KNN = KNeighborsClassifier(n_neighbors=self.n_training_neighbors).fit(X, y)
-        for descriptor in X:
-            for nearby_action in scoring_KNN.predict_proba(descriptor):
 
+        vs = []
+        traditional_knn = KNeighborsClassifier(n_neighbors=self.n_training_neighbors)\
+            .fit([descriptor[:-1] for descriptor in X], y)
+        for descriptor, label in zip(X, y):
+            neighbors = traditional_knn.kneighbors(descriptor[:-1])
+            same_class_sum = 0
+            for neighbor, neighbor_label in neighbors:
+                if label == neighbor_label:
+                    same_class_sum += 1
+            vs.append(float(same_class_sum/len(neighbors)))
 
+        for descriptor, label, v in zip(X, y, vs):
+                self._frame_descriptors_dict[descriptor[3]].append((descriptor[:-1], label, v))
 
-        # Create nearest neighbors that can easily be looped through from one temporal location to another
-        # Generate V(X) scores for all X
         self.is_fit = True
         return self
 
-    def k_descriptors(self, X=None, X_is_normalized=True, return_variance=True):
+    def k_descriptors(self, X=None, X_is_normalized=True, return_v=True):
         """
         Get nearest descriptors
 
@@ -61,11 +72,31 @@ class NearestDescriptors(BaseEstimator):
         ----------
         :param X: current descriptor (default returns all descriptors)
         :param X_is_normalized: boolean denoting whether or not training data is normalized
-        :param return_variance: boolean denoting whether or not descriptor variance should be returned
+        :param return_v: boolean denoting whether or not descriptor V score should be returned
 
         Returns
         -------
         :return: enumerable of nearby actions and their variances
         """
 
-        pass
+        if not self.is_fit:
+            raise NotFittedError("The Action Classifier is not fit")
+
+        if X is None:
+            return [].extend([a for a in self._frame_descriptors_dict.values()])
+
+        if not X_is_normalized:
+            raise NotImplemented("Descriptors must be normalized before calling k_descriptors")
+
+        position = X[:-1]
+        train_range = range(max(0, X[-1] - self.kappa), min(max(self._frame_descriptors_dict.items()), X[-1] + self.kappa))
+        train_vals = tuple([[], []])
+        for train_ind in train_range:
+            train_vals[0].extend([descriptors[0] for descriptors in self._frame_descriptors_dict[train_ind]])
+            train_vals[1].extend([tuple([stuff[1], stuff[2]]) for stuff in self._frame_descriptors_dict[train_ind]])
+
+        traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors)\
+            .fit(*train_vals)
+
+        return traditional_knn.kneighbors(position)
+
