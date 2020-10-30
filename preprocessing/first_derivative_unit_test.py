@@ -1,5 +1,5 @@
-import data_collection.get_data as gd
-from data_collection.derivatives import *
+import preprocessing.get_data as gd
+from preprocessing.derivatives import *
 
 
 # check that every velocity is an array of 3 numbers except for the first and last frame

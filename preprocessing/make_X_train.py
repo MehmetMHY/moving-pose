@@ -7,8 +7,8 @@
 # δP(t0) = [ δP(t0)_1, ..., δP(t0)_20] for every joint
 
 # load normalized skeleton data
-import data_collection.get_data as gd
-import data_collection.derivatives as d
+import preprocessing.get_data as gd
+import preprocessing.derivatives as d
 import numpy as np
 
 norm_train = gd.load_data('../pickle/norm_train.p')

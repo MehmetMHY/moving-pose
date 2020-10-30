@@ -47,18 +47,24 @@ class NearestDescriptors(BaseEstimator):
         -------
         :return: self
         """
-
+        # lines 51 to 65 find v scores for each descriptor
         vs = []
         traditional_knn = KNeighborsClassifier(n_neighbors=self.n_training_neighbors)\
             .fit([descriptor[:-1] for descriptor in X], y)
+
         for descriptor, label in zip(X, y):
+            # for each descriptor calculate the probability it belongs to its own class
             neighbors = traditional_knn.kneighbors(descriptor[:-1])
             same_class_sum = 0
+            # loop through all neighbors
             for neighbor, neighbor_label in neighbors:
+                # if the neighbor shares a label with the current descriptor then increase the count of same class
                 if label == neighbor_label:
                     same_class_sum += 1
+            # variance is equal to the number of neighbors that share a label over the total number of neighbors
             vs.append(float(same_class_sum/len(neighbors)))
 
+        # setup dictionary for temporal knn, frame (t) : descriptor (without t)
         for descriptor, label, v in zip(X, y, vs):
                 self._frame_descriptors_dict[descriptor[3]].append((descriptor[:-1], label, v))
 
@@ -89,15 +95,21 @@ class NearestDescriptors(BaseEstimator):
         if not X_is_normalized:
             raise NotImplemented("Descriptors must be normalized before calling k_descriptors")
 
-        position = X[:-1]
+        position = X[:-1]  # slice t out of descriptor
         train_range = range(max(0, X[-1] - self.kappa), min(max(self._frame_descriptors_dict.items()), X[-1] + self.kappa))
-        train_vals = tuple([[], []])
-        for train_ind in train_range:
-            train_vals[0].extend([descriptors[0] for descriptors in self._frame_descriptors_dict[train_ind]])
-            train_vals[1].extend([tuple([stuff[1], stuff[2]]) for stuff in self._frame_descriptors_dict[train_ind]])
+        # train_vals = tuple([[], []])
 
+        descriptors = []
+        labels_variance = []
+        for train_ind in train_range:
+            descriptors.extend(descriptor[0] for descriptor in self._frame_descriptors_dict[train_ind])
+            labels_variance.extend([tuple([label, variance]) for *_, label, variance in self._frame_descriptors_dict[train_ind]])
+            # train_vals[0].extend([descriptors[0] for descriptors in self._frame_descriptors_dict[train_ind]])
+            # train_vals[1].extend([tuple([stuff[1], stuff[2]]) for stuff in self._frame_descriptors_dict[train_ind]])
+
+        #  does fitting a KNN create O(n!) memory -> frame 5 has knn fit for frames 3 - 7, frame 6 has knn fit for frames 4 - 8
         traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors)\
-            .fit(*train_vals)
+            .fit(descriptors, labels_variance)
 
         return traditional_knn.kneighbors(position) if return_v \
             else [value_only[0] for value_only in traditional_knn.kneighbors(position)]

@@ -1,7 +1,7 @@
 from logic import iterators as s
 import numpy as np
 from numpy import linalg as LA
-from data_collection import get_data as gd
+from preprocessing import get_data as gd
 
 
 # find distance between 2 3D points
