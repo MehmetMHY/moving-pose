@@ -98,5 +98,6 @@ class NearestDescriptors(BaseEstimator):
         traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors)\
             .fit(*train_vals)
 
-        return traditional_knn.kneighbors(position)
+        return traditional_knn.kneighbors(position) if return_v \
+            else [value_only[0] for value_only in traditional_knn.kneighbors(position)]
 
