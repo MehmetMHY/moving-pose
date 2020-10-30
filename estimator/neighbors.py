@@ -17,6 +17,7 @@ class NearestDescriptors(BaseEstimator):
         ----------
         :param n_neighbors: number of nearest descriptors to return
         :param n_training_neighbors: number of nearest neighbors to include when generating descriptor scores
+        TODO(Add alpha and beta weights)
         :param alpha: derivative (speed) of P(t) weight
         :param beta: double derivative (acceleration) of P(t) weight
         :param temporal_delta_quant: function to calculate scalar delta between two temporal points
