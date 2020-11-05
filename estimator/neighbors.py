@@ -50,11 +50,13 @@ class NearestDescriptors(BaseEstimator):
         # lines 51 to 65 find v scores for each descriptor
         vs = []
         descriptors = X[:, :-1]
+        ts = X[:, -1]
         traditional_knn = KNeighborsClassifier(n_neighbors=self.n_training_neighbors)\
             .fit(descriptors, y)  #[descriptor[:-1] for descriptor in X], y)
 
         for descriptor, label in zip(descriptors, y):
             # for each descriptor calculate the probability it belongs to its own class
+            print(f'getting knn for class {label}')
             neighbors = traditional_knn.kneighbors(descriptor.reshape((1, -1)), return_distance=False)
             same_class_sum = 0
             # loop through all neighbors
@@ -66,8 +68,8 @@ class NearestDescriptors(BaseEstimator):
             vs.append(float(same_class_sum/len(neighbors)))
 
         # setup dictionary for temporal knn, frame (t) : descriptor (without t)
-        for descriptor, label, v in zip(X, y, vs):
-                self._frame_descriptors_dict[descriptor[3]].append((descriptor[:-1], label, v))
+        for descriptor, label, v, t in zip(X, y, vs, ts):
+                self._frame_descriptors_dict[t].append((t, label, v))
 
         self.is_fit = True
         return self
