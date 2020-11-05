@@ -8,7 +8,7 @@
 import preprocessing.get_data as gd
 import time
 import numpy as np
-import preprocessing.skeletonnormalization as SN
+import preprocessing.skeleton_normalization as SN
 import pickle
 
 train = gd.load_data('../pickle/train.p')

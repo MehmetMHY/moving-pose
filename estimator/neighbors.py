@@ -49,17 +49,18 @@ class NearestDescriptors(BaseEstimator):
         """
         # lines 51 to 65 find v scores for each descriptor
         vs = []
+        descriptors = X[:, :-1]
         traditional_knn = KNeighborsClassifier(n_neighbors=self.n_training_neighbors)\
-            .fit([descriptor[:-1] for descriptor in X], y)
+            .fit(descriptors, y)  #[descriptor[:-1] for descriptor in X], y)
 
-        for descriptor, label in zip(X, y):
+        for descriptor, label in zip(descriptors, y):
             # for each descriptor calculate the probability it belongs to its own class
-            neighbors = traditional_knn.kneighbors(descriptor[:-1])
+            neighbors = traditional_knn.kneighbors(descriptor.reshape((1, -1)), return_distance=False)
             same_class_sum = 0
             # loop through all neighbors
-            for neighbor, neighbor_label in neighbors:
+            for i in neighbors[0]:
                 # if the neighbor shares a label with the current descriptor then increase the count of same class
-                if label == neighbor_label:
+                if label == y[i]:
                     same_class_sum += 1
             # variance is equal to the number of neighbors that share a label over the total number of neighbors
             vs.append(float(same_class_sum/len(neighbors)))
@@ -107,7 +108,6 @@ class NearestDescriptors(BaseEstimator):
             # train_vals[0].extend([descriptors[0] for descriptors in self._frame_descriptors_dict[train_ind]])
             # train_vals[1].extend([tuple([stuff[1], stuff[2]]) for stuff in self._frame_descriptors_dict[train_ind]])
 
-        #  does fitting a KNN create O(n!) memory -> frame 5 has knn fit for frames 3 - 7, frame 6 has knn fit for frames 4 - 8
         traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors)\
             .fit(descriptors, labels_variance)
 

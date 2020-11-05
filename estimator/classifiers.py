@@ -1,10 +1,10 @@
 from collections import defaultdict
+import numpy as np
 
 from sklearn.base import BaseEstimator
 from sklearn.exceptions import NotFittedError
 
 from logic.metrics import max_class_score
-
 
 class ActionClassifier(BaseEstimator):
 
@@ -48,6 +48,10 @@ class ActionClassifier(BaseEstimator):
         for action, label in zip(actions, action_labels):
             descriptor_labels.extend([label] * len(action))
             descriptors.extend(action)
+
+        descriptors = np.array(descriptors)
+        descriptor_labels = np.array(descriptor_labels)
+
         self.action_neighbors_estimator.fit(descriptors, descriptor_labels)
         return self
 

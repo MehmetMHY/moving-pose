@@ -12,8 +12,7 @@ def manhattan_temporal_delta_quant(a, b):
     -------
     :return: Scalar value denoting the manhattan distance between a and b
     """
-    pass
-
+    return abs(a - b)
 
 def max_class_score(items_scores, return_total=False):
     best = (None, -1)
