@@ -65,12 +65,10 @@ class NearestDescriptors(BaseEstimator):
                 if label == y[i]:
                     same_class_sum += 1
             # variance is equal to the number of neighbors that share a label over the total number of neighbors
-            vs.append(float(same_class_sum)/len(neighbors))
+            vs.append(float(same_class_sum)/len(neighbors[0]))
 
         # setup dictionary for temporal knn, frame (t) : descriptor (without t)
         for descriptor, label, v, t in zip(descriptors, y, vs, ts):
-            # TODO why is t in tuple and index of dict?
-            # TODO why is t in tuple of dict? should instead be the descriptor?
                 self._frame_descriptors_dict[t].append((descriptor, label, v))
 
         self.is_fit = True
@@ -102,20 +100,15 @@ class NearestDescriptors(BaseEstimator):
 
         position = X[:-1]  # slice t out of descriptor
         train_range = range(max(0, X[-1] - self.kappa), min(max(self._frame_descriptors_dict.items()), X[-1] + self.kappa))
-        # train_vals = tuple([[], []])
 
         descriptors = []
-        labels_variance = []
-        for train_ind in train_range:
-            # FIXME this is adding the 0th tuple in the list of tuples at time to to the descriptors list
-            descriptors.extend(descriptor[0] for descriptor in self._frame_descriptors_dict[train_ind])
-            # FIXME also wrong
-            labels_variance.extend([tuple([label, variance]) for *_, label, variance in self._frame_descriptors_dict[train_ind]])
-            # train_vals[0].extend([descriptors[0] for descriptors in self._frame_descriptors_dict[train_ind]])
-            # train_vals[1].extend([tuple([stuff[1], stuff[2]]) for stuff in self._frame_descriptors_dict[train_ind]])
+        labels_v = []
+        for i in train_range:
+            descriptors.extend(descriptor[0] for descriptor in self._frame_descriptors_dict[i])
+            labels_v.extend([tuple([label, v]) for _, label, v in self._frame_descriptors_dict[i]])
 
         traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors)\
-            .fit(descriptors, labels_variance)
+            .fit(descriptors, labels_v)
 
         return traditional_knn.kneighbors(position) if return_v \
             else [value_only[0] for value_only in traditional_knn.kneighbors(position)]
