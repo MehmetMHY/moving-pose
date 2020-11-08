@@ -1,6 +1,6 @@
 # Team Nestlé CSCI470 Project
 
-![linus-torvalds-innovation-hard-work](https://user-images.githubusercontent.com/15916367/94550311-c1dab400-0210-11eb-92df-8e0064d639de.jpg)
+<img width="350" alt="3" src="https://user-images.githubusercontent.com/15916367/94550311-c1dab400-0210-11eb-92df-8e0064d639de.jpg">
 
 ## Members:
 - Andrew Darling
@@ -11,6 +11,8 @@
 - This is the Fall 2020 CSCI470 Semester Project
 - We are implmenting the following research paper for this project: https://openaccess.thecvf.com/content_iccv_2013/papers/Zanfir_The_Moving_Pose_2013_ICCV_paper.pdf
 
+## Multiview Action 3D Dataset Action IDs:
+<img width="701" alt="3" src="https://user-images.githubusercontent.com/15916367/85251734-4bf7cd00-b417-11ea-8003-de9340da3c0c.png">
 
 ## Project:
 - Topic Area: Supervised Learning, Binary Classification, Support Vector Model (SVM)
