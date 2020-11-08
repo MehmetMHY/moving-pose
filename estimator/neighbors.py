@@ -59,16 +59,19 @@ class NearestDescriptors(BaseEstimator):
             neighbors = traditional_knn.kneighbors(descriptor.reshape((1, -1)), return_distance=False)
             same_class_sum = 0
             # loop through all neighbors
+            # TODO vs are larger than one I don't think this should ever happen
             for i in neighbors[0]:
                 # if the neighbor shares a label with the current descriptor then increase the count of same class
                 if label == y[i]:
                     same_class_sum += 1
             # variance is equal to the number of neighbors that share a label over the total number of neighbors
-            vs.append(float(same_class_sum/len(neighbors)))
+            vs.append(float(same_class_sum)/len(neighbors))
 
         # setup dictionary for temporal knn, frame (t) : descriptor (without t)
-        for descriptor, label, v, t in zip(X, y, vs, ts):
-                self._frame_descriptors_dict[t].append((t, label, v))
+        for descriptor, label, v, t in zip(descriptors, y, vs, ts):
+            # TODO why is t in tuple and index of dict?
+            # TODO why is t in tuple of dict? should instead be the descriptor?
+                self._frame_descriptors_dict[t].append((descriptor, label, v))
 
         self.is_fit = True
         return self
@@ -104,7 +107,9 @@ class NearestDescriptors(BaseEstimator):
         descriptors = []
         labels_variance = []
         for train_ind in train_range:
+            # FIXME this is adding the 0th tuple in the list of tuples at time to to the descriptors list
             descriptors.extend(descriptor[0] for descriptor in self._frame_descriptors_dict[train_ind])
+            # FIXME also wrong
             labels_variance.extend([tuple([label, variance]) for *_, label, variance in self._frame_descriptors_dict[train_ind]])
             # train_vals[0].extend([descriptors[0] for descriptors in self._frame_descriptors_dict[train_ind]])
             # train_vals[1].extend([tuple([stuff[1], stuff[2]]) for stuff in self._frame_descriptors_dict[train_ind]])
