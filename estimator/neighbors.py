@@ -56,7 +56,6 @@ class NearestDescriptors(BaseEstimator):
 
         for descriptor, label in zip(descriptors, y):
             # for each descriptor calculate the probability it belongs to its own class
-            print(f'getting knn for class {label}')
             neighbors = traditional_knn.kneighbors(descriptor.reshape((1, -1)), return_distance=False)
             same_class_sum = 0
             # loop through all neighbors
