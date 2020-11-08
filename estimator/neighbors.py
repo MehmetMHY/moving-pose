@@ -5,6 +5,8 @@ from sklearn.exceptions import NotFittedError
 from sklearn.neighbors import KNeighborsClassifier
 from logic.metrics import manhattan_temporal_delta_quant
 
+import preprocessing.get_data as gd
+from datetime import datetime
 
 class NearestDescriptors(BaseEstimator):
 
@@ -33,7 +35,7 @@ class NearestDescriptors(BaseEstimator):
 
         self._frame_descriptors_dict = defaultdict(list)
 
-    def fit(self, X, y, X_is_normalized=True):
+    def fit(self, X, y, X_is_normalized=True, save_train_data=False):
         """
         Fit this estimator with provided training data and hyper parameters
 
@@ -72,7 +74,15 @@ class NearestDescriptors(BaseEstimator):
                 self._frame_descriptors_dict[t].append((descriptor, label, v))
 
         self.is_fit = True
+
+        if save_train_data:
+            time_stamp = datetime.now().strftime('%m-%d-%H-%M')
+            gd.save_data(f'train_data-{time_stamp}', self._frame_descriptors_dict)
         return self
+
+    def load_train_data(self, filename):
+        self._frame_descriptors_dict = gd.load_data(filename)
+        self.is_fit = True
 
     def k_descriptors(self, X=None, X_is_normalized=True, return_v=True):
         """

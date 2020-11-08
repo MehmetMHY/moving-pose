@@ -6,6 +6,8 @@ from sklearn.exceptions import NotFittedError
 
 from logic.metrics import max_class_score
 
+            # for each descriptor calculate the probability it belongs to its own class
+
 class ActionClassifier(BaseEstimator):
 
     def __init__(self, descriptor_neighbors_estimator, theta=0.3, n=5):
@@ -25,7 +27,7 @@ class ActionClassifier(BaseEstimator):
         self.theta = theta
         self.n = n
 
-    def fit(self, actions, action_labels, actions_are_normalized=True):
+    def fit(self, actions, action_labels, actions_are_normalized=True, save_train_data=False):
         """
         Fit the estimator with relevant actions
 
@@ -52,7 +54,7 @@ class ActionClassifier(BaseEstimator):
         descriptors = np.array(descriptors)
         descriptor_labels = np.array(descriptor_labels)
 
-        self.action_neighbors_estimator.fit(descriptors, descriptor_labels)
+        self.action_neighbors_estimator.fit(descriptors, descriptor_labels, save_train_data)
         return self
 
     def predict(self, action=None, descriptors_are_normalized=True, key=None):

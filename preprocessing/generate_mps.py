@@ -41,7 +41,6 @@ def generate_mps(data_file, file_to_label='../../pickle/file_to_label.p', r_file
     r = gd.load_data(r_file)
     all_mp_descriptors = defaultdict(list)  # features : [list of descriptor for every frame], labels : list of labels for every frame
 
-
     for file in data.keys():
         print(f'creating mp for {file}')
         action_sequence = data[file]  # action_sequence (frames, 20, 5) array
