@@ -95,15 +95,15 @@ def main(train_path, test_path):
     train = make_main_dir(train_path)
 
     print("Saving datas...")
-    save_data("../pickle/test.p", test)
-    save_data("../pickle/train.p", train)
+    save_data("../../pickle/test.p", test)
+    save_data("../../pickle/train.p", train)
 
     print("Program took", time.time() - start_time, "to run!")
 
 
 if __name__ == "__main__":
     # paths to Test and Train data sets (this can change)
-    test_path = "../ext/dataset/multiview_action/Test/"
-    train_path = "../ext/dataset/multiview_action/Train/"
+    test_path = "../../ext/dataset/multiview_action/Test/"
+    train_path = "../../ext/dataset/multiview_action/Train/"
 
     main(train_path, test_path)

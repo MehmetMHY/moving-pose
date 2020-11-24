@@ -1,6 +1,6 @@
-import preprocessing.get_data as gd
-import preprocessing.skeleton_normalization as sn
-import preprocessing.derivatives as dvts
+import movingpose.preprocessing.get_data as gd
+import movingpose.preprocessing.skeleton_normalization as sn
+import movingpose.preprocessing.derivatives as dvts
 import numpy as np
 from collections import defaultdict
 

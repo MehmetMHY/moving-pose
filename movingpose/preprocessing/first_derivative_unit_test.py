@@ -1,5 +1,5 @@
-import preprocessing.get_data as gd
-from preprocessing.derivatives import *
+import movingpose.preprocessing.get_data as gd
+from movingpose.preprocessing.derivatives import *
 
 
 # check that every velocity is an array of 3 numbers except for the first and last frame

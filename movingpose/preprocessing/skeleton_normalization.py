@@ -1,7 +1,6 @@
 import numpy as np
 from numpy import linalg as LA
-from logic.iterators import Skeleton
-import math
+from movingpose.logic.iterators import Skeleton
 
 
 # set the hip joint to (0, 0) and shift all other joints accordingly

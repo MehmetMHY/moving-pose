@@ -3,9 +3,9 @@ from collections import defaultdict
 from sklearn.base import BaseEstimator
 from sklearn.exceptions import NotFittedError
 from sklearn.neighbors import KNeighborsClassifier
-from logic.metrics import manhattan_temporal_delta_quant
+from movingpose.logic.metrics import manhattan_temporal_delta_quant
 
-import preprocessing.get_data as gd
+import movingpose.preprocessing.get_data as gd
 from datetime import datetime
 
 class NearestDescriptors(BaseEstimator):

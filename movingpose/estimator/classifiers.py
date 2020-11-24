@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.exceptions import NotFittedError
 
-from logic.metrics import max_class_score
+from movingpose.logic.metrics import max_class_score
 
             # for each descriptor calculate the probability it belongs to its own class
 

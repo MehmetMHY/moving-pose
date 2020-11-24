@@ -1,6 +1,3 @@
-import preprocessing.get_data as gd
-
-
 # def get_all_data():
 #     """
 #     :return: matrix X with every frame from every action in form of [descriptor, t, label]

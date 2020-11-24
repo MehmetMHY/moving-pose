@@ -5,11 +5,10 @@
 # s - subject
 # e - episode
 
-import preprocessing.get_data as gd
+import movingpose.preprocessing.get_data as gd
 import time
 import numpy as np
-import preprocessing.skeleton_normalization as SN
-import pickle
+import movingpose.preprocessing.skeleton_normalization as SN
 
 train = gd.load_data('../pickle/train.p')
 R = gd.load_data('../pickle/r.p')
