@@ -5,13 +5,13 @@
 # s - subject
 # e - episode
 
-import movingpose.preprocessing.get_data as gd
+import movingpose.preprocessing.kinect_skeleton_data as gd
 import time
 import numpy as np
 import movingpose.preprocessing.skeleton_normalization as SN
 
-train = gd.load_data('../pickle/train.p')
-R = gd.load_data('../pickle/r.p')
+train = gd.load_pickle('../pickle/train.p')
+R = gd.load_pickle('../pickle/r.p')
 
 def get_frame(frame, data):
     return np.array(data)[frame - 1, :, 1:]
@@ -50,7 +50,7 @@ for file in train:
     print(f'completed file {file}')
 
 # norm_train now saved in train
-gd.save_data('../pickle/norm_train.p', train)
+gd._save_data('../pickle/norm_train.p', train)
 
 
 actions = {'a01': 'drink',

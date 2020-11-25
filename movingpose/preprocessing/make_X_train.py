@@ -7,11 +7,11 @@
 # δP(t0) = [ δP(t0)_1, ..., δP(t0)_20] for every joint
 
 # load normalized skeleton data
-import movingpose.preprocessing.get_data as gd
+import movingpose.preprocessing.kinect_skeleton_data as gd
 import movingpose.preprocessing.derivatives as d
 import numpy as np
 
-norm_train = gd.load_data('../pickle/norm_train.p')
+norm_train = gd.load_pickle('../pickle/norm_train.p')
 X_train = {}
 
 for data_set in norm_train:

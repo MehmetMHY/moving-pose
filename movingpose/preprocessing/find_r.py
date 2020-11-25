@@ -1,7 +1,7 @@
 from movingpose.logic import iterators as s
+from movingpose.preprocessing import kinect_skeleton_data as gd
 import numpy as np
 from numpy import linalg as LA
-from movingpose.preprocessing import get_data as gd
 
 
 # find distance between 2 3D points
@@ -26,8 +26,8 @@ def avg_dis_r(data):
 
 # generates R using the training data
 def generate_r():
-    train = gd.load_data("../pickle/train.p")
+    train = gd.load_pickle("../pickle/train.p")
     R = avg_dis_r(train)
-    gd.save_data("../pickle/r.p", R)
+    gd._save_data("../pickle/r.p", R)
     print("r.p has been generated")
 

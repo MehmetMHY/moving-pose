@@ -1,4 +1,4 @@
-import movingpose.preprocessing.get_data as gd
+import movingpose.preprocessing.kinect_skeleton_data as gd
 from movingpose.preprocessing.derivatives import *
 
 
@@ -56,12 +56,15 @@ def run_tests():
     actual_derivative = first_derivative(input_array)
     assert check_vals(actual_derivative, expected_derivative) is True
 
-    norm_train = gd.load_data('../pickle/norm_train.p')
+    norm_train = gd.load_pickle('../pickle/norm_train.p')
     p_t = norm_train['a08_s01_e01_skeleton_proj.txt']
     p_t = np.array([frame for frame in p_t])[:, :, 2:]
     velocity = first_derivative(p_t)
     assert check_shape(velocity) is True
 
     print("All tests pass")
-run_tests()
+
+
+if __name__ == "__main__":
+    run_tests()
 

@@ -1,3 +1,4 @@
+import pickle
 from collections import defaultdict
 import numpy as np
 
@@ -6,24 +7,32 @@ from sklearn.exceptions import NotFittedError
 
 from movingpose.logic.metrics import max_class_score
 
-            # for each descriptor calculate the probability it belongs to its own class
+
+def load_pickle(path):
+    """
+    Load classifier from pickle file
+    """
+    with open(path, 'rb') as fp:
+        data = pickle.load(fp)
+    return data
+
 
 class ActionClassifier(BaseEstimator):
 
-    def __init__(self, descriptor_neighbors_estimator, theta=0.3, n=5):
+    def __init__(self, nearest_descriptor_estimator, theta=0.3, n=5):
         """
         Initialize action classifier
 
         Parameters
         ----------
-        :param descriptor_neighbors_estimator: kNN classifier used for retrieving k nearest action descriptors
+        :param nearest_descriptor_estimator: kNN classifier used for retrieving k nearest action descriptors
                     must contain:
                         fit(X, y): fits the model with relevant descriptors
                         k_descriptors(X): returns an enumerable of actions nearby X and their scores
         :param theta: minimum score to return an action
         :param n: minimum number of frames before making a prediction
         """
-        self.action_neighbors_estimator = descriptor_neighbors_estimator
+        self.action_neighbors_estimator = nearest_descriptor_estimator
         self.theta = theta
         self.n = n
 
@@ -95,3 +104,12 @@ class ActionClassifier(BaseEstimator):
             if mcs[0][1]/mcs[1] > self.theta:
                 yield mcs[0][0]
         yield max_class_score(class_score)[0]
+
+    def save_pickle(self, path):
+        if path[-2:] == ".p":
+            path = path
+        else:
+            path = str(path + ".p")
+
+        with open(path, 'wb') as fp:
+            pickle.dump(self, fp, protocol=pickle.HIGHEST_PROTOCOL)

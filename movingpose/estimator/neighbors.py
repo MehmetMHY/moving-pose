@@ -5,8 +5,9 @@ from sklearn.exceptions import NotFittedError
 from sklearn.neighbors import KNeighborsClassifier
 from movingpose.logic.metrics import manhattan_temporal_delta_quant
 
-import movingpose.preprocessing.get_data as gd
+import movingpose.preprocessing.kinect_skeleton_data as gd
 from datetime import datetime
+
 
 class NearestDescriptors(BaseEstimator):
 
@@ -77,11 +78,11 @@ class NearestDescriptors(BaseEstimator):
 
         if save_train_data:
             time_stamp = datetime.now().strftime('%m-%d-%H-%M')
-            gd.save_data(f'train_data-{time_stamp}', self._frame_descriptors_dict)
+            gd._save_data(f'train_data-{time_stamp}', self._frame_descriptors_dict)
         return self
 
     def load_train_data(self, filename):
-        self._frame_descriptors_dict = gd.load_data(filename)
+        self._frame_descriptors_dict = gd.load_pickle(filename)
         self.is_fit = True
 
     def k_descriptors(self, X=None, X_is_normalized=True, return_v=True):
