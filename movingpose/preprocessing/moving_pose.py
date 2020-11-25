@@ -40,8 +40,8 @@ def format_skeleton_data(skeleton_data):
     Returns
     ====
     :returns tuple of (X, label)
-            Format:      X = [ descriptors ... (all frames) ]
-                    labels = str(pose)
+            Format:     X = [ descriptors ... (all frames) ]
+                    label = str(pose)
     """
     pass
 
