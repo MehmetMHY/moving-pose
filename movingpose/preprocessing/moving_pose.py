@@ -64,6 +64,8 @@ def format_skeleton_data(skeleton_data):
     ====
     :returns tuple of (X, label)
             Format:     X = [ descriptors ... (all frames) ]
+                        descriptor_joint_0 = [x, y, z, x', y', z', x'', y'', z'', frame_t]
+                        descriptors = [descriptor_joint_0, ..., descriptor_joint_19]
 
     """
     normalized_action_sequence = normalize_action_sequence(skeleton_data, r_vector)
@@ -88,8 +90,9 @@ def format_skeleton_data_dict(skeleton_data_dict):
         Format: skeleton_data_dict[file_name] = [ [ [frame #, joint #, x, y, z], ... (all joints) ], ... (all frames) ]
 
     :return: Tuple of (X, labels)
-                Format:      X = [ [ descriptors ... (all frames) ] ... (all files) ]
-                        labels = [ str(pose) ... (all files) ]
+                Format:     X = [ [ descriptors ... (all frames) ] ... (all files) ]
+                            where descriptors is described in format_skeleton_data
+                            labels = [ str(pose) ... (all files) ]
     """
     X = []
     labels = []
