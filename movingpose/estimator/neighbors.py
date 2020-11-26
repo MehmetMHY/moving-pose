@@ -5,9 +5,6 @@ from sklearn.exceptions import NotFittedError
 from sklearn.neighbors import KNeighborsClassifier
 from movingpose.logic.metrics import manhattan_temporal_delta_quant
 
-import movingpose.preprocessing.kinect_skeleton_data as gd
-from datetime import datetime
-
 
 class NearestDescriptors(BaseEstimator):
 
@@ -36,54 +33,63 @@ class NearestDescriptors(BaseEstimator):
 
         self._frame_descriptors_dict = defaultdict(list)
 
-    def fit(self, X, y, X_is_normalized=True, save_train_data=False):
+    def fit(self, X, y, X_is_normalized=True):
         """
-        Fit this estimator with provided training data and hyper parameters
+        Fit this estimator with provided training data
 
         Parameters
         ----------
-        :param X: training features (descriptors)
+        :param X: training features (descriptors: [[x, y, z, x', y', z', x'', y'', z'', t] ... (all descriptors)])
         :param y: training labels (action)
-        :param X_is_normalized: boolean denoting whether or not training data is normalized
+        :param X_is_normalized: boolean denoting whether or not training features are normalized
 
         Returns
         -------
         :return: self
         """
-        # lines 51 to 65 find v scores for each descriptor
+
+        if not X_is_normalized:
+            raise NotImplemented("X must be normalized")
+
+        # all descriptors' (x,y,z), (x', y', z'), and (x'', y'', z'')
+        derivatives = [X[:, 0:3], X[:, 3:6], X[:, 6:9]]
+
+        # list of frame numbers
+        frames = X[:, -1]
+
+        # KNN estimator fit with `derivatives`
+        #       Format: [(knn pos), (knn pos)', (knn pos)'']
+        traditional_knns = []
+
+        # v scores for every derivative
+        #       Format: [[v, v', v''] ... (all descriptors) ]
         vs = []
-        descriptors = X[:, :-1]
-        ts = X[:, -1]
-        traditional_knn = KNeighborsClassifier(n_neighbors=self.n_training_neighbors)\
-            .fit(descriptors, y)  #[descriptor[:-1] for descriptor in X], y)
 
-        for descriptor, label in zip(descriptors, y):
-            # for each descriptor calculate the probability it belongs to its own class
-            neighbors = traditional_knn.kneighbors(descriptor.reshape((1, -1)), return_distance=False)
-            same_class_sum = 0
-            # loop through all neighbors
-            # TODO vs are larger than one I don't think this should ever happen
-            for i in neighbors[0]:
-                # if the neighbor shares a label with the current descriptor then increase the count of same class
-                if label == y[i]:
-                    same_class_sum += 1
-            # variance is equal to the number of neighbors that share a label over the total number of neighbors
-            vs.append(float(same_class_sum)/len(neighbors[0]))
+        # Train all traditional knns using each `derivative` (X) and labels (y)
+        for derivative in derivatives:
+            traditional_knns.append(KNeighborsClassifier(n_neighbors=self.n_training_neighbors).fit(derivative, y))
 
-        # setup dictionary for temporal knn, frame (t) : descriptor (without t)
-        for descriptor, label, v, t in zip(descriptors, y, vs, ts):
-                self._frame_descriptors_dict[t].append((descriptor, label, v))
+        for descriptor, label in zip(X, y):
+            descriptor_v = []
+            for traditional_knn, derivative in zip(traditional_knns, [descriptor[0:3], descriptor[3:6], descriptor[6:9]]):
+                neighbors = traditional_knn.kneighbors(derivative.reshape((1, -1)), return_distance=False)
+
+                same_class_sum = 0
+                # loop through all neighbors
+                for i in neighbors[0]:
+                    # if the neighbor shares a label with the current descriptor then increase the count of same class
+                    if label == y[i]:
+                        same_class_sum += 1
+                    
+                descriptor_v.append(same_class_sum / len(neighbors[0]))
+            vs.append(descriptor_v)
+
+        # setup dictionary for temporal knn, format _frame_descriptors_dict[frame] = [descriptor, v, label]
+        for frame, descriptor, v, label in zip(frames, X, vs, y):
+                self._frame_descriptors_dict[frame].append((descriptor, v, label))
 
         self.is_fit = True
-
-        if save_train_data:
-            time_stamp = datetime.now().strftime('%m-%d-%H-%M')
-            gd._save_data(f'train_data-{time_stamp}', self._frame_descriptors_dict)
         return self
-
-    def load_train_data(self, filename):
-        self._frame_descriptors_dict = gd.load_pickle(filename)
-        self.is_fit = True
 
     def k_descriptors(self, X=None, X_is_normalized=True, return_v=True):
         """
