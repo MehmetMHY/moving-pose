@@ -1,6 +1,29 @@
 from movingpose.preprocessing import skeleton_normalization
 from movingpose.preprocessing import derivatives
+from movingpose.preprocessing import kinect_skeleton_data
 import numpy as np
+
+file_to_label_dict = {'a01': 'drink',
+                      'a02': 'eat',
+                      'a03': 'read',
+                      'a04': 'write on paper',
+                      'a05': 'use laptop',
+                      'a06': 'play game',
+                      'a07': 'call cellphone',
+                      'a08': 'use vacuum cleaner',
+                      'a09': 'cheer up',
+                      'a10': 'sit still',
+                      'a11': 'walking',
+                      'a12': 'sit down',
+                      'a13': 'toss paper',
+                      'a14': 'lay down on sofa',
+                      'a15': 'stand up',
+                      'a16': 'play guitar'}
+
+r_vector = [0.10476466, 0.07057415, 0.10766335, 0.40250801, 0.31667159,
+            0.40411627, 0.29429485, 0.19838387, 0.20443147, 0.20289835,
+            0.29255157, 0.09042491, 0.23899638, 0.23617619, 0.09050006,
+            0.2313854,  0.2369734,  0.07989741, 0.08361892]
 
 
 def normalize_action_sequence(action_sequence, r):
@@ -19,7 +42,7 @@ def normalize_action_sequence(action_sequence, r):
 
 def get_mp_descriptors(norm_action_sequence):
     """
-    :param norm_action_sequence: array of (frames, 20, 5) positions for an action sequence [[[frame, joint, x, y, z],...,]]
+    :param norm_action_sequence: array of (frames, 20, 3) positions for an action sequence [[[frame, joint, x, y, z],...,]]
     :return: an mp_descriptor with time for each frame in the action_sequence
     """
     norm_action_sequence = np.array(norm_action_sequence)
@@ -41,9 +64,20 @@ def format_skeleton_data(skeleton_data):
     ====
     :returns tuple of (X, label)
             Format:     X = [ descriptors ... (all frames) ]
-                    label = str(pose)
+
     """
-    pass
+    normalized_action_sequence = normalize_action_sequence(skeleton_data, r_vector)
+    action_sequence_features = get_mp_descriptors(normalized_action_sequence)
+    # cut off frames where derivatives cannot be calculated\
+    descriptors = []
+    for frame_t in range(2, len(action_sequence_features[0]) - 3):
+        for joint in range(20):
+            mp_descriptor = [*action_sequence_features[0][frame_t][joint],
+                             *action_sequence_features[1][frame_t][joint],
+                             *action_sequence_features[2][frame_t][joint],
+                              frame_t]
+            descriptors.append(mp_descriptor)
+    return descriptors
 
 
 def format_skeleton_data_dict(skeleton_data_dict):
@@ -57,34 +91,12 @@ def format_skeleton_data_dict(skeleton_data_dict):
                 Format:      X = [ [ descriptors ... (all frames) ] ... (all files) ]
                         labels = [ str(pose) ... (all files) ]
     """
-    # file_to_label_dict = kinect_skeleton_data.load_pickle(file_to_label)
-    # data = kinect_skeleton_data.load_pickle(data_file)
-    # r = kinect_skeleton_data.load_pickle(r_file)
-    # all_mp_descriptors = defaultdict(list)  # features : [list of descriptor for every frame], labels : list of labels for every frame
-    #
-    # for file in data.keys():
-    #     print(f'creating mp for {file}')
-    #     action_sequence = data[file]  # action_sequence (frames, 20, 5) array
-    #     norm_sequence = normalize_action_sequence(action_sequence, r)  # norm_sequence (frames, 20, 3)
-    #     sequence_mp_descriptors = get_mp_descriptors(norm_sequence)  # sequence_mp_descriptors (3, frames, 20, 3)
-    #
-    #     action_descriptors = []
-    #     label = []
-    #     # only want t where derivatives can be calculated
-    #     for t in range(2, len(action_sequence) - 3):
-    #             for joint in range(20):
-    #                 descriptor_vector = [*sequence_mp_descriptors[0][t][joint],
-    #                                     *sequence_mp_descriptors[1][t][joint],
-    #                                     *sequence_mp_descriptors[2][t][joint],
-    #                                     t]
-    #
-    #
-    #                 action_descriptors.append(descriptor_vector)
-    #     label = file_to_label_dict[file[:3]]
-    #     all_mp_descriptors[file] = tuple([action_descriptors, label])
-    #
-    # print('mp generation complete')
-    # return all_mp_descriptors
-    pass
+    X = []
+    labels = []
+    for file_name, action_sequence in skeleton_data_dict.items():
+        labels.append(file_to_label_dict[file_name[:3]])
+        X.append(format_skeleton_data(action_sequence))
+    return X, labels
+
 
 
