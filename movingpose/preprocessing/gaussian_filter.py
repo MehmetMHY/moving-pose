@@ -1,9 +1,11 @@
 import numpy as np
 import cv2
 
+
 # create gaussian filter kernel matrix
 def create_kernel(o, n):
      return list(cv2.getGaussianKernel(ksize=n,sigma=o).T[0])
+
 
 # apply gaussian filter to 1 action of the skeleton data
 # notes:
