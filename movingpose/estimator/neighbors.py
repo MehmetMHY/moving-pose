@@ -40,27 +40,24 @@ class NearestPoses(BaseEstimator):
           Format: [str(action) ... (all actions)]
         :param X_is_normalized: boolean denoting whether or not training features are normalized
 
-        State Changes
-        -------------
-        self._frame_descriptors_dict : Dictionary used by temporal knn
-            Format: _frame_poses_dict[frame] = [(pose, v, label) ... (all poses at `frame`)]
-                                        pose = [x, y, z, x', y', z', x'', y'', z'', ... (all descriptors)]
-                                           v = [v_score, v'_score, v''_score]
-                                       label = str(action)
-
         Returns
         -------
         :return: self
         """
+        # State Changes
+        # -------------
+        # self._frame_descriptors_dict : Dictionary used by temporal knn
+        #     Format: _frame_poses_dict[frame] = [(pose, v, label) ... (all poses at `frame`)]
+        #                                 pose = [[x, y, z, x', y', z', x'', y'', z''], ... (all descriptors)]
 
         if not X_is_normalized:
             raise NotImplemented("X must be normalized")
 
         # all pose derivatives in the following format:
         # [
-        #   [(x,y,z, ... (all descriptors)), ... (all poses)],
-        #   [(x', y', z', ... (all descriptors)), ... (all poses)],
-        #   [(x'', y'', z'', ... (all  descriptors)), ... (all poses)]
+        #   [[x, y, z, ... (all descriptors)], ... (all poses)],
+        #   [[x', y', z', ... (all descriptors)], ... (all poses)],
+        #   [[x'', y'', z'', ... (all  descriptors)], ... (all poses)]
         # ]
         derivatives = [[], [], []]
 
@@ -81,9 +78,8 @@ class NearestPoses(BaseEstimator):
                     pose_descriptors[0].extend(descriptor[0:3])
                     pose_descriptors[1].extend(descriptor[3:6])
                     pose_descriptors[2].extend(descriptor[6:9])
-                derivatives[0].append(pose_descriptors[0])
-                derivatives[1].append(pose_descriptors[1])
-                derivatives[2].append(pose_descriptors[2])
+                for j in range(3):
+                    derivatives[i].append(pose_descriptors[i])
                 labels.append(y[i])
                 frames.append(pose[0][-1])
 
@@ -112,54 +108,75 @@ class NearestPoses(BaseEstimator):
                 cur_v.append(same_class_sum / len(neighbors[0]))
             vs.append(cur_v)
 
-        # setup dictionary for temporal knn, format _frame_descriptors_dict[frame] = [descriptor, v, label]
+        # setup dictionary for temporal knn
+        # Format: _frame_descriptors_dict[frame] = [[pose, v, label] ... (all poses)]
+        #                                   pose = [x, y, z, x', y', z', x'', y'', z'', ... (all descriptors)]
         for i in range(len(frames)):
             cur_frame = frames[i]
-            cur_pose_derivatives = [derivatives[0][i], derivatives[1][i], derivatives[2][i]]
+            cur_pose = []
+            cur_pose.extend([derivatives[j][i] for j in range(3)])
             cur_label = labels[i]
             cur_v = vs[i]
 
-            self._frame_poses_dict[cur_frame].append((cur_pose_derivatives, cur_v, cur_label))
+            v_total = float(cur_v[0]) + self.alpha * cur_v[1] + self.beta * cur_v[2]
+            self._frame_poses_dict[cur_frame].append((cur_pose, v_total, cur_label))
 
         self.is_fit = True
         return self
 
-    def k_descriptors(self, X=None, X_is_normalized=True, return_v=True):
+    def k_poses(self, X=None, X_is_normalized=True, return_v=True):
         """
-        Get nearest descriptors
+        Get nearest poses
 
         Parameters
         ----------
-        :param X: current descriptor (default returns all descriptors)
-        :param X_is_normalized: boolean denoting whether or not training data is normalized
-        :param return_v: boolean denoting whether or not descriptor V score should be returned
+        :param X: pose (default returns all poses)
+            Format: [[x, y, z, x', y', z', x'', y'', z'', t] ... (all descriptors)]
+        :param X_is_normalized: boolean denoting whether or not X is normalized
+        :param return_v: boolean denoting whether or not pose V score should be returned
 
         Returns
         -------
         :return: enumerable of nearby actions and their variances
+            Format: ([action, ... (all poses)], [v_score, ... (all poses)])
         """
 
         if not self.is_fit:
-            raise NotFittedError("The Action Classifier is not fit")
+            raise NotFittedError("The estimator has not been fit")
 
         if X is None:
-            return [].extend([a for a in self._frame_poses_dict.values()])
+            all_actions = []
+            all_actions.extend([frame_info[2] for frame_info in self._frame_poses_dict])
+            all_vs = []
+            all_vs.extend([frame_info[1] for frame_info in self._frame_poses_dict])
+
+            return (all_actions, all_vs) if return_v else all_actions
 
         if not X_is_normalized:
-            raise NotImplemented("Descriptors must be normalized before calling k_descriptors")
+            raise NotImplemented("Descriptors must be normalized")
 
-        position = X[:-1]  # slice t out of descriptor
-        train_range = range(max(0, X[-1] - self.kappa), min(max(self._frame_poses_dict.items()), X[-1] + self.kappa))
+        min_range = max(0, X[-1] - self.kappa)
+        max_range = min(max(self._frame_poses_dict.keys()), X[-1] + self.kappa)
+        train_range = range(min_range, max_range)
 
-        descriptors = []
-        labels_v = []
+        # all pose derivatives
+        #   Format: [x, y, z, x', y', z', x'', y'', z'', ... (all  descriptors))]
+        cur_pose = []
+        cur_pose.extend(X[:, 0:9])
+
+        # all relevant (temporal range) pose derivatives in the following format:
+        # [[x, y, z, x', y', z', x'', y'', z'' ... (all descriptors)], ... (all poses)]
+        relevant_poses = []
+
+        # all relevan (temporal range) pose v_scores and labels in the following format:
+        # [[v_score, label], ... (all poses)]
+        v_labels = []
+
         for i in train_range:
-            descriptors.extend(descriptor[0] for descriptor in self._frame_poses_dict[i])
-            labels_v.extend([tuple([label, v]) for _, label, v in self._frame_poses_dict[i]])
+            relevant_poses.append(frame_info[0] for frame_info in self._frame_poses_dict[i])
+            v_labels.append([frame_info[1:] for frame_info in self._frame_poses_dict[i]])
 
-        traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors)\
-            .fit(descriptors, labels_v)
+        traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors).fit(relevant_poses, v_labels)
+        neighbors = traditional_knn.kneighbors(cur_pose)[0]
 
-        return traditional_knn.kneighbors(position) if return_v \
-            else [value_only[0] for value_only in traditional_knn.kneighbors(position)]
-
+        return neighbors if return_v else neighbors[0]
