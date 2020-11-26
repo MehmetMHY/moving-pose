@@ -70,15 +70,15 @@ def format_skeleton_data(skeleton_data):
     """
     normalized_action_sequence = normalize_action_sequence(skeleton_data, r_vector)
     action_sequence_features = get_mp_descriptors(normalized_action_sequence)
-    # cut off frames where derivatives cannot be calculated\
-    descriptors = []
+    # cut off frames where derivatives cannot be calculated
+    descriptors = np.empty(shape=(0, 10))
     for frame_t in range(2, len(action_sequence_features[0]) - 3):
         for joint in range(20):
-            mp_descriptor = [*action_sequence_features[0][frame_t][joint],
+            mp_descriptor = np.array([[*action_sequence_features[0][frame_t][joint],
                              *action_sequence_features[1][frame_t][joint],
                              *action_sequence_features[2][frame_t][joint],
-                              frame_t]
-            descriptors.append(mp_descriptor)
+                              frame_t]])
+            descriptors = np.append(descriptors, mp_descriptor, axis=0)
     return descriptors
 
 
@@ -95,11 +95,9 @@ def format_skeleton_data_dict(skeleton_data_dict):
                             labels = [ str(pose) ... (all files) ]
     """
     X = []
-    labels = []
+    labels = np.empty(shape=0)
     for file_name, action_sequence in skeleton_data_dict.items():
-        labels.append(file_to_label_dict[file_name[:3]])
+        labels = np.append(labels, file_to_label_dict[file_name[:3]])
         X.append(format_skeleton_data(action_sequence))
-    return X, labels
 
-
-
+    return np.array(X), labels
