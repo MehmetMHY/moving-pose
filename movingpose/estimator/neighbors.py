@@ -3,35 +3,30 @@ from collections import defaultdict
 from sklearn.base import BaseEstimator
 from sklearn.exceptions import NotFittedError
 from sklearn.neighbors import KNeighborsClassifier
-from movingpose.logic.metrics import manhattan_temporal_delta_quant
 
 
-class NearestDescriptors(BaseEstimator):
+class NearestPoses(BaseEstimator):
 
-    def __init__(self, n_neighbors=5, n_training_neighbors=10, alpha=0.6, beta=0.2, kappa=3,
-                 temporal_delta_quant=manhattan_temporal_delta_quant):
+    def __init__(self, n_neighbors=5, n_training_neighbors=10, alpha=0.6, beta=0.2, kappa=3):
         """
-        Initialize NearestDescriptors Estimator
+        Initialize NearestPoses Estimator
 
         Parameters
         ----------
-        :param n_neighbors: number of nearest descriptors to return
-        :param n_training_neighbors: number of nearest neighbors to include when generating descriptor scores
-        TODO(Add alpha and beta weights)
-        :param alpha: derivative (speed) of P(t) weight
-        :param beta: double derivative (acceleration) of P(t) weight
-        :param temporal_delta_quant: function to calculate scalar delta between two temporal points
-        :param kappa: max temporal delta to filter training data with when calling k_descriptors
+        :param n_neighbors: number of nearest poses to return
+        :param n_training_neighbors: number of nearest neighbors to return
+        :param alpha: derivative (speed) of pose weight
+        :param beta: double derivative (acceleration) of pose weight
+        :param kappa: max temporal delta to filter training data with when calling k_poses
         """
         self.n_neighbors = n_neighbors
         self.n_training_neighbors = n_training_neighbors
         self.alpha = alpha
         self.beta = beta
-        self.temporal_delta_quant = temporal_delta_quant
         self.kappa = kappa
-        self.is_fit = False
 
-        self._frame_descriptors_dict = defaultdict(list)
+        self.is_fit = False
+        self._frame_poses_dict = defaultdict(list)
 
     def fit(self, X, y, X_is_normalized=True):
         """
@@ -39,9 +34,19 @@ class NearestDescriptors(BaseEstimator):
 
         Parameters
         ----------
-        :param X: training features (descriptors: [[x, y, z, x', y', z', x'', y'', z'', t] ... (all descriptors)])
-        :param y: training labels (action)
+        :param X: training features
+          Format: [[[[x, y, z, x', y', z', x'', y'', z'', t] ... (all descriptors)] ... (all poses)] .. (all actions)]
+        :param y: training labels
+          Format: [str(action) ... (all actions)]
         :param X_is_normalized: boolean denoting whether or not training features are normalized
+
+        State Changes
+        -------------
+        self._frame_descriptors_dict : Dictionary used by temporal knn
+            Format: _frame_poses_dict[frame] = [(pose, v, label) ... (all poses at `frame`)]
+                                        pose = [x, y, z, x', y', z', x'', y'', z'', ... (all descriptors)]
+                                           v = [v_score, v'_score, v''_score]
+                                       label = str(action)
 
         Returns
         -------
@@ -51,42 +56,70 @@ class NearestDescriptors(BaseEstimator):
         if not X_is_normalized:
             raise NotImplemented("X must be normalized")
 
-        # all descriptors' (x,y,z), (x', y', z'), and (x'', y'', z'')
-        derivatives = [X[:, 0:3], X[:, 3:6], X[:, 6:9]]
+        # all pose derivatives in the following format:
+        # [
+        #   [(x,y,z, ... (all descriptors)), ... (all poses)],
+        #   [(x', y', z', ... (all descriptors)), ... (all poses)],
+        #   [(x'', y'', z'', ... (all  descriptors)), ... (all poses)]
+        # ]
+        derivatives = [[], [], []]
 
-        # list of frame numbers
-        frames = X[:, -1]
+        # all pose labels in the following format:
+        # [
+        #   str(action1), str(action1), ... (all poses in action1),
+        #   str(action2), str(action2), ... (all poses in action2),
+        # ...  (all actions)]
+        labels = []
+
+        # each pose's frame number
+        frames = []
+
+        for i, action in enumerate(X):
+            for pose in action:
+                pose_descriptors = [[], [], []]
+                for descriptor in pose[0]:
+                    pose_descriptors[0].extend(descriptor[0:3])
+                    pose_descriptors[1].extend(descriptor[3:6])
+                    pose_descriptors[2].extend(descriptor[6:9])
+                derivatives[0].append(pose_descriptors[0])
+                derivatives[1].append(pose_descriptors[1])
+                derivatives[2].append(pose_descriptors[2])
+                labels.append(y[i])
+                frames.append(pose[0][-1])
 
         # KNN estimator fit with `derivatives`
-        #       Format: [(knn pos), (knn pos)', (knn pos)'']
-        traditional_knns = []
+        #       Format: [knn, knn', knn'']
+        traditional_knns = [
+            KNeighborsClassifier(n_neighbors=self.n_training_neighbors).fit(derivatives[i], labels) for i in range(3)
+        ]
 
         # v scores for every derivative
-        #       Format: [[v, v', v''] ... (all descriptors) ]
+        #       Format: [[v, v', v''] ... (all poses) ]
         vs = []
 
-        # Train all traditional knns using each `derivative` (X) and labels (y)
-        for derivative in derivatives:
-            traditional_knns.append(KNeighborsClassifier(n_neighbors=self.n_training_neighbors).fit(derivative, y))
-
-        for descriptor, label in zip(X, y):
-            descriptor_v = []
-            for traditional_knn, derivative in zip(traditional_knns, [descriptor[0:3], descriptor[3:6], descriptor[6:9]]):
-                neighbors = traditional_knn.kneighbors(derivative.reshape((1, -1)), return_distance=False)
+        for i in range(len(frames)):
+            cur_pose_derivatives = [derivatives[0][i], derivatives[1][i], derivatives[2][i]]
+            cur_label = labels[i]
+            cur_v = []
+            for traditional_knn, cur_pose_derivative in zip(traditional_knns, cur_pose_derivatives):
+                neighbors = traditional_knn.kneighbors(cur_pose_derivative.reshape((1, -1)), return_distance=False)
 
                 same_class_sum = 0
-                # loop through all neighbors
-                for i in neighbors[0]:
-                    # if the neighbor shares a label with the current descriptor then increase the count of same class
-                    if label == y[i]:
+                for neighbor in neighbors[0]:
+                    if cur_label == neighbor:
                         same_class_sum += 1
-                    
-                descriptor_v.append(same_class_sum / len(neighbors[0]))
-            vs.append(descriptor_v)
+
+                cur_v.append(same_class_sum / len(neighbors[0]))
+            vs.append(cur_v)
 
         # setup dictionary for temporal knn, format _frame_descriptors_dict[frame] = [descriptor, v, label]
-        for frame, descriptor, v, label in zip(frames, X, vs, y):
-                self._frame_descriptors_dict[frame].append((descriptor, v, label))
+        for i in range(len(frames)):
+            cur_frame = frames[i]
+            cur_pose_derivatives = [derivatives[0][i], derivatives[1][i], derivatives[2][i]]
+            cur_label = labels[i]
+            cur_v = vs[i]
+
+            self._frame_poses_dict[cur_frame].append((cur_pose_derivatives, cur_v, cur_label))
 
         self.is_fit = True
         return self
@@ -110,19 +143,19 @@ class NearestDescriptors(BaseEstimator):
             raise NotFittedError("The Action Classifier is not fit")
 
         if X is None:
-            return [].extend([a for a in self._frame_descriptors_dict.values()])
+            return [].extend([a for a in self._frame_poses_dict.values()])
 
         if not X_is_normalized:
             raise NotImplemented("Descriptors must be normalized before calling k_descriptors")
 
         position = X[:-1]  # slice t out of descriptor
-        train_range = range(max(0, X[-1] - self.kappa), min(max(self._frame_descriptors_dict.items()), X[-1] + self.kappa))
+        train_range = range(max(0, X[-1] - self.kappa), min(max(self._frame_poses_dict.items()), X[-1] + self.kappa))
 
         descriptors = []
         labels_v = []
         for i in train_range:
-            descriptors.extend(descriptor[0] for descriptor in self._frame_descriptors_dict[i])
-            labels_v.extend([tuple([label, v]) for _, label, v in self._frame_descriptors_dict[i]])
+            descriptors.extend(descriptor[0] for descriptor in self._frame_poses_dict[i])
+            labels_v.extend([tuple([label, v]) for _, label, v in self._frame_poses_dict[i]])
 
         traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors)\
             .fit(descriptors, labels_v)
