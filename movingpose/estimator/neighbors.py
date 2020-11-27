@@ -47,8 +47,8 @@ class NearestPoses(BaseEstimator):
         # State Changes
         # -------------
         # self._frame_descriptors_dict : Dictionary used by temporal knn
-        #     Format: _frame_poses_dict[frame] = [(pose, v, label) ... (all poses at `frame`)]
-        #                                 pose = [[x, y, z, x', y', z', x'', y'', z''], ... (all descriptors)]
+        #     Format: _frame_poses_dict[frame] = [(pose, label, v) ... (all poses at `frame`)]
+        #                                 pose = [x, y, z, x', y', z', x'', y'', z'', ... (all descriptors)]
 
         if not X_is_normalized:
             raise NotImplemented("X must be normalized")
@@ -109,7 +109,7 @@ class NearestPoses(BaseEstimator):
             vs.append(cur_v)
 
         # setup dictionary for temporal knn
-        # Format: _frame_descriptors_dict[frame] = [[pose, v, label] ... (all poses)]
+        # Format: _frame_descriptors_dict[frame] = [[pose, label, v] ... (all poses)]
         #                                   pose = [x, y, z, x', y', z', x'', y'', z'', ... (all descriptors)]
         for i in range(len(frames)):
             cur_frame = frames[i]
@@ -119,7 +119,7 @@ class NearestPoses(BaseEstimator):
             cur_v = vs[i]
 
             v_total = float(cur_v[0]) + self.alpha * cur_v[1] + self.beta * cur_v[2]
-            self._frame_poses_dict[cur_frame].append((cur_pose, v_total, cur_label))
+            self._frame_poses_dict[cur_frame].append((cur_pose, cur_label, v_total))
 
         self.is_fit = True
         return self
@@ -168,15 +168,18 @@ class NearestPoses(BaseEstimator):
         # [[x, y, z, x', y', z', x'', y'', z'' ... (all descriptors)], ... (all poses)]
         relevant_poses = []
 
-        # all relevan (temporal range) pose v_scores and labels in the following format:
+        # all relevant (temporal range) pose v_scores and labels in the following format:
         # [[v_score, label], ... (all poses)]
-        v_labels = []
+        relevant_labels_v = []
 
         for i in train_range:
-            relevant_poses.append(frame_info[0] for frame_info in self._frame_poses_dict[i])
-            v_labels.append([frame_info[1:] for frame_info in self._frame_poses_dict[i]])
+            relevant_poses.append(*frame_info[0] for frame_info in self._frame_poses_dict[i])
+            labels = [frame_info[1] for frame_info in self._frame_poses_dict[i]]
+            vs = [frame_info[2] for frame_info in self._frame_poses_dict[i]]
+            for label, v in zip(labels, vs):
+                relevant_labels_v.append([label, v])
 
-        traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors).fit(relevant_poses, v_labels)
+        traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors).fit(relevant_poses, relevant_labels_v)
         neighbors = traditional_knn.kneighbors(cur_pose)[0]
 
         return neighbors if return_v else neighbors[0]

@@ -36,76 +36,75 @@ class ActionClassifier(BaseEstimator):
         self.theta = theta
         self.n = n
 
-    def fit(self, actions, action_labels, actions_are_normalized=True, save_train_data=False):
+    def fit(self, X, y, actions_are_normalized=True):
         """
         Fit the estimator with relevant actions
 
         Parameters
         ----------
-        :param actions: Ordered lists of descriptors making up actions
-        :param action_labels: array of labels denoting the type of action
+        :param X: list of actions
+           Format: [[[[x, y, z, x', y', z', x'', y'', z'', t] ... (all descriptors)] ... (all poses)] .. (all actions)]
+        :param y: list of labels denoting the type of action
+           Format: [str(action) ... (all actions)]
         :param actions_are_normalized: boolean denoting whether or not actions are normalized
 
         Returns
         -------
         :return: self
         """
+        # State Changes
+        # -------------
+        # Fit self.action_neighbors_estimator with X and y
 
         if not actions_are_normalized:
-            raise NotImplemented("Actions must be normalized before they can be used to fit the Action Classifier")
+            raise NotImplemented("Actions must be normalized")
 
-        descriptors = []
-        descriptor_labels = []
-        for action, label in zip(actions, action_labels):
-            descriptor_labels.extend([label] * len(action))
-            descriptors.extend(action)
+        self.action_neighbors_estimator.fit(X, y, actions_are_normalized)
 
-        descriptors = np.array(descriptors)
-        descriptor_labels = np.array(descriptor_labels)
-
-        self.action_neighbors_estimator.fit(descriptors, descriptor_labels, save_train_data)
         return self
 
-    def predict(self, action=None, descriptors_are_normalized=True, key=None):
+    def predict(self, X, descriptors_are_normalized=True):
         """
         Predict action from descriptors
 
         Parameters
         ----------
-        :param action: ordered list of descriptors (temporal!) describing an action (required when key is None)
+        :param X: Action in the form of a temporally ordered list of poses
+            Format: [[[x, y, z, x', y', z', x'', y'', z'', t], ... (all descriptors)], ... (all poses)]
         :param descriptors_are_normalized: boolean denoting whether or not descriptors are normalized
-        :param key: function that retrieves next descriptor when called (required when descriptors is None)
-                        key must return temporal location or 'None' to terminate
-
-        Note: When action and key are provided, action is used
 
         Returns
         -------
-        :return: predicted action as iterable
+        :return: Predicted action
+            Format: str(action)
         """
 
-        if action is None and key is None:
-            raise ValueError("Value for action or key is required when predicting an action with the Action Classifier")
+        if X is None:
+            raise ValueError("X is required when predicting an action with the Action Classifier")
 
         if not self.action_neighbors_estimator.is_fit:
-            raise NotFittedError("The Action Classifier is not fit")
+            raise NotFittedError("The estimator has not been fit")
 
         if not descriptors_are_normalized:
-            raise NotImplemented("Actions must be normalized before predictions can be made with the Action Classifier")
-
-        if action is not None:
-            action = iter(action)
+            raise NotImplemented("Actions must be normalized")
 
         class_score = defaultdict(float)
-        while (descriptor := next(action, None) if action is not None else key()) is not None:
-            for train_action, score in self.action_neighbors_estimator.k_descriptors(descriptor):
-                class_score[train_action] += score
+        while (pose := next(X, None)) is not None:
+            for nearby_pose, score in self.action_neighbors_estimator.k_poses(pose):
+                class_score[nearby_pose] += score
             mcs = max_class_score(class_score, return_total=True)
             if mcs[0][1]/mcs[1] > self.theta:
-                yield mcs[0][0]
-        yield max_class_score(class_score)[0]
+                return mcs[0][0]
+        return max_class_score(class_score)[0]
 
     def save_pickle(self, path):
+        """
+        Save `self` to a pickle file located at the provided `path`
+
+        Parameters
+        ----------
+        :param path: Save location
+        """
         if path[-2:] == ".p":
             path = path
         else:
