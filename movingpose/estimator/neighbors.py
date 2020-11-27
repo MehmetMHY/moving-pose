@@ -74,12 +74,12 @@ class NearestPoses(BaseEstimator):
         for i, action in enumerate(X):
             for pose in action:
                 pose_descriptors = [[], [], []]
-                for descriptor in pose[0]:
+                for descriptor in pose:
                     pose_descriptors[0].extend(descriptor[0:3])
                     pose_descriptors[1].extend(descriptor[3:6])
                     pose_descriptors[2].extend(descriptor[6:9])
                 for j in range(3):
-                    derivatives[i].append(pose_descriptors[i])
+                    derivatives[j].append(pose_descriptors[j])
                 labels.append(y[i])
                 frames.append(pose[0][-1])
 
@@ -94,12 +94,13 @@ class NearestPoses(BaseEstimator):
         vs = []
 
         for i in range(len(frames)):
-            cur_pose_derivatives = [derivatives[0][i], derivatives[1][i], derivatives[2][i]]
+            cur_pose_derivatives = [derivatives[j][i] for j in range(3)]
             cur_label = labels[i]
             cur_v = []
             for traditional_knn, cur_pose_derivative in zip(traditional_knns, cur_pose_derivatives):
                 neighbors = traditional_knn.kneighbors(cur_pose_derivative.reshape((1, -1)), return_distance=False)
 
+                # FIXME I bet my left nutsack this part doesnt work first try
                 same_class_sum = 0
                 for neighbor in neighbors[0]:
                     if cur_label == neighbor:
@@ -173,11 +174,8 @@ class NearestPoses(BaseEstimator):
         relevant_labels_v = []
 
         for i in train_range:
-            relevant_poses.append(*frame_info[0] for frame_info in self._frame_poses_dict[i])
-            labels = [frame_info[1] for frame_info in self._frame_poses_dict[i]]
-            vs = [frame_info[2] for frame_info in self._frame_poses_dict[i]]
-            for label, v in zip(labels, vs):
-                relevant_labels_v.append([label, v])
+            relevant_poses.append(frame_info[0] for frame_info in self._frame_poses_dict[i])
+            relevant_labels_v.append(frame_info[1:] for frame_info in self._frame_poses_dict[i])
 
         traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors).fit(relevant_poses, relevant_labels_v)
         neighbors = traditional_knn.kneighbors(cur_pose)[0]

@@ -54,7 +54,7 @@ class ActionClassifier(BaseEstimator):
         """
         # State Changes
         # -------------
-        # Fit self.action_neighbors_estimator with X and y
+        # Train self.action_neighbors_estimator with X and y
 
         if not actions_are_normalized:
             raise NotImplemented("Actions must be normalized")
