@@ -71,15 +71,17 @@ def format_skeleton_data(skeleton_data):
     normalized_action_sequence = normalize_action_sequence(skeleton_data, r_vector)
     action_sequence_features = get_mp_descriptors(normalized_action_sequence)
     # cut off frames where derivatives cannot be calculated
-    descriptors = np.empty(shape=(0, 10))
+    descriptors = []
     for frame_t in range(2, len(action_sequence_features[0]) - 3):
+        frame_descriptors = []
         for joint in range(20):
-            mp_descriptor = np.array([[*action_sequence_features[0][frame_t][joint],
+            mp_descriptor = np.array([*action_sequence_features[0][frame_t][joint],
                              *action_sequence_features[1][frame_t][joint],
                              *action_sequence_features[2][frame_t][joint],
-                              frame_t]])
-            descriptors = np.append(descriptors, mp_descriptor, axis=0)
-    return descriptors
+                              frame_t - 2])
+            frame_descriptors.append(mp_descriptor)
+        descriptors.append(np.array(frame_descriptors))
+    return np.array(descriptors)
 
 
 def format_skeleton_data_dict(skeleton_data_dict):
