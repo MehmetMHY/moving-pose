@@ -1,6 +1,5 @@
 from movingpose.preprocessing import skeleton_normalization
 from movingpose.preprocessing import derivatives
-from movingpose.preprocessing import kinect_skeleton_data
 import numpy as np
 
 file_to_label_dict = {'a01': 'drink',

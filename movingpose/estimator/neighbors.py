@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.exceptions import NotFittedError
 from sklearn.neighbors import KNeighborsClassifier
@@ -53,6 +54,8 @@ class NearestPoses(BaseEstimator):
         if not X_is_normalized:
             raise NotImplemented("X must be normalized")
 
+        self._frame_poses_dict.clear()
+
         # all pose derivatives in the following format:
         # [
         #   [[x, y, z, ... (all descriptors)], ... (all poses)],
@@ -98,9 +101,11 @@ class NearestPoses(BaseEstimator):
             cur_label = labels[i]
             cur_v = []
             for traditional_knn, cur_pose_derivative in zip(traditional_knns, cur_pose_derivatives):
-                neighbors = traditional_knn.kneighbors(cur_pose_derivative.reshape((1, -1)), return_distance=False)
+                neighbors = traditional_knn.kneighbors(
+                    [cur_pose_derivative],
+                    return_distance=False
+                )
 
-                # FIXME I bet my left nutsack this part doesnt work first try
                 same_class_sum = 0
                 for neighbor in neighbors[0]:
                     if cur_label == neighbor:
@@ -180,4 +185,4 @@ class NearestPoses(BaseEstimator):
         traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors).fit(relevant_poses, relevant_labels_v)
         neighbors = traditional_knn.kneighbors(cur_pose)[0]
 
-        return neighbors if return_v else neighbors[0]
+        return neighbors if return_v else [label_v[0] for label_v in neighbors]

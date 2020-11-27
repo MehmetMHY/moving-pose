@@ -63,15 +63,15 @@ class ActionClassifier(BaseEstimator):
 
         return self
 
-    def predict(self, X, descriptors_are_normalized=True):
+    def predict(self, X, poses_are_normalized=True):
         """
-        Predict action from descriptors
+        Predict action from poses
 
         Parameters
         ----------
         :param X: Action in the form of a temporally ordered list of poses
             Format: [[[x, y, z, x', y', z', x'', y'', z'', t], ... (all descriptors)], ... (all poses)]
-        :param descriptors_are_normalized: boolean denoting whether or not descriptors are normalized
+        :param poses_are_normalized: boolean denoting whether or not poses are normalized
 
         Returns
         -------
@@ -80,15 +80,16 @@ class ActionClassifier(BaseEstimator):
         """
 
         if X is None:
-            raise ValueError("X is required when predicting an action with the Action Classifier")
+            raise ValueError("X is required when predicting an action")
 
         if not self.nearest_pose_estimator.is_fit:
             raise NotFittedError("The estimator has not been fit")
 
-        if not descriptors_are_normalized:
+        if not poses_are_normalized:
             raise NotImplemented("Actions must be normalized")
 
         class_score = defaultdict(float)
+        X = iter(X)
         while (pose := next(X, None)) is not None:
             for nearby_pose, score in self.nearest_pose_estimator.k_poses(pose):
                 class_score[nearby_pose] += score
@@ -96,6 +97,23 @@ class ActionClassifier(BaseEstimator):
             if mcs[0][1]/mcs[1] > self.theta:
                 return mcs[0][0]
         return max_class_score(class_score)[0]
+
+    def predict_all(self, Xs, poses_are_normalized=True):
+        """
+        Predict many actions from lists of poses
+        
+        Parameters
+        ----------
+        :param Xs: Actions in the form of a temporally ordered lists of poses
+           Format: [[[[x, y, z, x', y', z', x'', y'', z'', t] ... (all descriptors)] ... (all poses)] ... (all actions)]
+        :param poses_are_normalized: boolean denoting whether or not descriptors are normalized
+        
+        Returns
+        -------
+        :return: Predicted action
+            Format: str(action)
+        """
+        return [self.predict(X, poses_are_normalized) for X in Xs]
 
     def save_pickle(self, path):
         """
