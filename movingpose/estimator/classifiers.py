@@ -19,20 +19,20 @@ def load_pickle(path):
 
 class ActionClassifier(BaseEstimator):
 
-    def __init__(self, nearest_descriptor_estimator, theta=0.3, n=5):
+    def __init__(self, nearest_pose_estimator, theta=0.3, n=5):
         """
         Initialize action classifier
 
         Parameters
         ----------
-        :param nearest_descriptor_estimator: kNN classifier used for retrieving k nearest action descriptors
+        :param nearest_pose_estimator: kNN classifier used for retrieving k nearest action descriptors
                     must contain:
                         fit(X, y): fits the model with relevant descriptors
                         k_descriptors(X): returns an enumerable of actions nearby X and their scores
         :param theta: minimum score to return an action
         :param n: minimum number of frames before making a prediction
         """
-        self.action_neighbors_estimator = nearest_descriptor_estimator
+        self.nearest_pose_estimator = nearest_pose_estimator
         self.theta = theta
         self.n = n
 
@@ -59,7 +59,7 @@ class ActionClassifier(BaseEstimator):
         if not actions_are_normalized:
             raise NotImplemented("Actions must be normalized")
 
-        self.action_neighbors_estimator.fit(X, y, actions_are_normalized)
+        self.nearest_pose_estimator.fit(X, y, actions_are_normalized)
 
         return self
 
@@ -82,7 +82,7 @@ class ActionClassifier(BaseEstimator):
         if X is None:
             raise ValueError("X is required when predicting an action with the Action Classifier")
 
-        if not self.action_neighbors_estimator.is_fit:
+        if not self.nearest_pose_estimator.is_fit:
             raise NotFittedError("The estimator has not been fit")
 
         if not descriptors_are_normalized:
@@ -90,7 +90,7 @@ class ActionClassifier(BaseEstimator):
 
         class_score = defaultdict(float)
         while (pose := next(X, None)) is not None:
-            for nearby_pose, score in self.action_neighbors_estimator.k_poses(pose):
+            for nearby_pose, score in self.nearest_pose_estimator.k_poses(pose):
                 class_score[nearby_pose] += score
             mcs = max_class_score(class_score, return_total=True)
             if mcs[0][1]/mcs[1] > self.theta:

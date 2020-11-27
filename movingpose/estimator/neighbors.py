@@ -138,7 +138,7 @@ class NearestPoses(BaseEstimator):
 
         Returns
         -------
-        :return: enumerable of nearby actions and their variances
+        :return: tuple of nearby actions and their variances
             Format: ([action, ... (all poses)], [v_score, ... (all poses)])
         """
 
