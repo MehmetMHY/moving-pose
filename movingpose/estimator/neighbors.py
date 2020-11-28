@@ -92,7 +92,7 @@ class NearestPoses(BaseEstimator):
             # KNN estimator fit with `derivatives`
             #       Format: [knn, knn', knn'']
             traditional_knns = [
-                KNeighborsClassifier(n_neighbors=self.n_training_neighbors).fit(derivatives[i], labels) for i in range(3)
+               KNeighborsClassifier(n_neighbors=self.n_training_neighbors).fit(derivatives[i], labels) for i in range(3)
             ]
 
             # v scores for every derivative
@@ -133,11 +133,14 @@ class NearestPoses(BaseEstimator):
         #                                   pose = [x, y, z, x', y', z', x'', y'', z'', ... (all descriptors)]
         for i in range(len(frames)):
             cur_frame = frames[i]
-            cur_pose = []
-            for j in range(0, 57, 3):
-                cur_pose.extend(derivatives[k][i][j:j+3] for k in range(3))
+            cur_derivatives = [derivatives[j][i] for j in range(3)]
             cur_label = labels[i]
             cur_v = vs[i]
+
+            cur_pose = []
+            for k in range(0, 60, 3):
+                for j in range(3):
+                    cur_pose.extend(cur_derivatives[j][k:k+3])
 
             v_total = float(cur_v[0]) + self.alpha * cur_v[1] + self.beta * cur_v[2]
             self._frame_poses_dict[cur_frame].append((cur_pose, cur_label, v_total))
@@ -145,14 +148,14 @@ class NearestPoses(BaseEstimator):
         self.is_fit = True
         return self
 
-    def k_poses(self, X=None, X_is_normalized=True, return_v=True):
+    def k_poses(self, X, X_is_normalized=True, return_v=True):
         """
         Get nearest poses
 
         Parameters
         ----------
-        :param X: pose (default returns all poses)
-            Format: [[x, y, z, x', y', z', x'', y'', z'', t] ... (all descriptors)]
+        :param X: pose
+            Format: [[[x, y, z, x', y', z', x'', y'', z'', t] ... (all descriptors)]
         :param X_is_normalized: boolean denoting whether or not X is normalized
         :param return_v: boolean denoting whether or not pose V score should be returned
 
@@ -165,25 +168,18 @@ class NearestPoses(BaseEstimator):
         if not self.is_fit:
             raise NotFittedError("The estimator has not been fit")
 
-        if X is None:
-            all_actions = []
-            all_actions.extend([frame_info[2] for frame_info in self._frame_poses_dict])
-            all_vs = []
-            all_vs.extend([frame_info[1] for frame_info in self._frame_poses_dict])
-
-            return (all_actions, all_vs) if return_v else all_actions
-
         if not X_is_normalized:
             raise NotImplemented("Descriptors must be normalized")
 
-        min_range = max(0, X[-1] - self.kappa)
-        max_range = min(max(self._frame_poses_dict.keys()), X[-1] + self.kappa)
-        train_range = range(min_range, max_range)
+        min_range = max(0, X[0, -1] - self.kappa)
+        max_range = min(max(self._frame_poses_dict.keys()), X[0, -1] + self.kappa)
+        train_range = range(int(min_range), int(max_range))
 
         # all pose derivatives
         #   Format: [x, y, z, x', y', z', x'', y'', z'', ... (all  descriptors))]
         cur_pose = []
-        cur_pose.extend(X[:, 0:9])
+        for descriptor in X:
+            cur_pose.extend(descriptor[0:9])
 
         # all relevant (temporal range) pose derivatives in the following format:
         # [[x, y, z, x', y', z', x'', y'', z'' ... (all descriptors)], ... (all poses)]
@@ -194,10 +190,11 @@ class NearestPoses(BaseEstimator):
         relevant_labels_v = []
 
         for i in train_range:
-            relevant_poses.append(frame_info[0] for frame_info in self._frame_poses_dict[i])
-            relevant_labels_v.append(frame_info[1:] for frame_info in self._frame_poses_dict[i])
+            relevant_poses.extend(frame_info[0] for frame_info in self._frame_poses_dict[i])
+            relevant_labels_v.extend(frame_info[1:] for frame_info in self._frame_poses_dict[i])
 
         traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors).fit(relevant_poses, relevant_labels_v)
-        neighbors = traditional_knn.kneighbors(cur_pose)[0]
+        neighbors = traditional_knn.kneighbors([cur_pose])[1][0]
 
-        return neighbors if return_v else [label_v[0] for label_v in neighbors]
+        return [relevant_labels_v[label_v] for label_v in neighbors] if return_v \
+            else [relevant_labels_v[label_v][0] for label_v in neighbors]

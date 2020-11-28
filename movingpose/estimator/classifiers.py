@@ -91,9 +91,12 @@ class ActionClassifier(BaseEstimator):
 
         class_score = defaultdict(float)
         X = iter(X)
+        i = 0
         while (pose := next(X, None)) is not None:
             for nearby_pose, score in self.nearest_pose_estimator.k_poses(pose):
                 class_score[nearby_pose] += score
+            if (i := i + 1) <= self.n:
+                continue
             mcs = max_class_score(class_score, return_total=True)
             if mcs[0][1]/mcs[1] > self.theta:
                 return mcs[0][0]

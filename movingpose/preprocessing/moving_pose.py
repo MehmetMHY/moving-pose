@@ -65,7 +65,6 @@ def format_skeleton_data(skeleton_data):
             Format:     X = [ descriptors ... (all frames) ]
                         descriptor_joint_0 = [x, y, z, x', y', z', x'', y'', z'', frame_t]
                         descriptors = [descriptor_joint_0, ..., descriptor_joint_19]
-
     """
     normalized_action_sequence = normalize_action_sequence(skeleton_data, r_vector)
     action_sequence_features = get_mp_descriptors(normalized_action_sequence)

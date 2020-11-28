@@ -37,13 +37,14 @@ X_train, X_test, y_train, y_test = train_test_split(X, labels, random_state=42)
 
 ## Train Action Classifier with normalized training data
 
+print("# Correctly predicted: (higher is better)")
 best_score = sys.maxsize
 best_action_classifier = None
-for n_neighbors in range(5, 15, 5):
-    for n_training_neighbors in [1000, 100, 10000]:
-        for alpha in np.arange(0.2, 0.8, 0.1):
-            for beta in np.arange(0.1, 0.5, 0.1):
-                for kappa in range(3, 10, 1):
+for n_neighbors in [20, 25, 30]:
+    for n_training_neighbors in [5000, 10000]:
+        for alpha in [0.75]:
+            for beta in [0.6]:
+                for kappa in [20, 30, 40, 50]:
                     nearest_pose_estimator = neighbors.NearestPoses(
                         n_neighbors=n_neighbors,
                         n_training_neighbors=n_training_neighbors,
@@ -51,8 +52,8 @@ for n_neighbors in range(5, 15, 5):
                         beta=beta,
                         kappa=kappa
                     )
-                    for theta in np.arange(0.2, 0.8, 0.05):
-                        for n in range(5, 15, 1):
+                    for theta in [0.6, 0.7, 0.8, 0.9]:
+                        for n in [40, 60, 80, 100, 120, 140, 160]:
                             action_classifier = classifiers.ActionClassifier(
                                 nearest_pose_estimator=nearest_pose_estimator,
                                 theta=theta,
@@ -61,15 +62,14 @@ for n_neighbors in range(5, 15, 5):
                             action_classifier.fit(X_train, y_train, cache_path="../pickle/action_classifier_training.p")
                             y_pred = action_classifier.predict_all(X_test)
 
-                            diff = 0
+                            correct = 0
                             for pred, actual in zip(y_pred, y_test):
-                                diff += 1 if pred != actual else 0
+                                correct += 1 if pred == actual else 0
 
-                            print("Score: (lower is better)")
-                            print(diff)
+                            print(f"{correct}/{len(y_pred)}")
 
-                            if diff < best_score:
-                                best_score = diff
+                            if correct > best_score:
+                                best_score = correct
                                 best_action_classifier = action_classifier
 
 ## Print best action classifier and its score
