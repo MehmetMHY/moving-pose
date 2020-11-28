@@ -41,7 +41,7 @@ print("# Correctly predicted: (higher is better)")
 best_score = sys.maxsize
 best_action_classifier = None
 for n_neighbors in [20, 25, 30]:
-    for n_training_neighbors in [5000, 10000]:
+    for n_training_neighbors in [2000, 5000, 10000]:
         for alpha in [0.75]:
             for beta in [0.6]:
                 for kappa in [20, 30, 40, 50]:
@@ -59,7 +59,11 @@ for n_neighbors in [20, 25, 30]:
                                 theta=theta,
                                 n=n
                             )
-                            action_classifier.fit(X_train, y_train, cache_path="../pickle/action_classifier_training.p")
+                            action_classifier.fit(
+                                X_train,
+                                y_train,
+                                cache_path=f"../pickle/action_classifier_training.p-{str(n_training_neighbors)}"
+                            )
                             y_pred = action_classifier.predict_all(X_test)
 
                             correct = 0
