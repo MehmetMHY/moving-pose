@@ -1,0 +1,12 @@
+.DS_Store
+ext/kinect_skeleton_data_code/SkeletonBasics-D2D/Debug/
+ext/kinect_skeleton_data_code/SkeletonBasics-D2D/.vs/
+ext/dataset/dataset*
+Meeting_Notes
+__pycache__
+.idea
+venv
+examples/.ipynb_checkpoints
+notebook/skeleton-animation-v2.ipynb
+.testing
+pickle
