@@ -62,7 +62,7 @@ for n_neighbors in [20, 25, 30]:
                             action_classifier.fit(
                                 X_train,
                                 y_train,
-                                cache_path=f"../pickle/action_classifier_training.p-{str(n_training_neighbors)}"
+                                cache_path=f"../pickle/action_classifier_training-{str(n_training_neighbors)}.p"
                             )
                             y_pred = action_classifier.predict_all(X_test)
 
