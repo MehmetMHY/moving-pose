@@ -1,5 +1,7 @@
 from movingpose.preprocessing import skeleton_normalization
 from movingpose.preprocessing import derivatives
+from movingpose.preprocessing.gaussian_filter import gaussian_filter
+from movingpose.preprocessing.kinect_skeleton_data import load_pickle
 import numpy as np
 
 file_to_label_dict = {'a01': 'drink',
@@ -32,8 +34,11 @@ def normalize_action_sequence(action_sequence, r):
     :return: normalized (frames, 20, 3)
     """
     normalized_frames = []
-    action_sequence = np.array(action_sequence)[:, :, 1:]
-    for frame in action_sequence:
+
+    smoothed_action_sequence = gaussian_filter(np.array(action_sequence))[:, :, 1:]
+   # action_sequence = np.array(action_sequence)[:, :, 1:]
+
+    for frame in smoothed_action_sequence:
         norm_skele = skeleton_normalization.normalize_skeleton(frame, r)
         normalized_frames.append(norm_skele)
     return normalized_frames
@@ -45,6 +50,7 @@ def get_mp_descriptors(norm_action_sequence):
     :return: an mp_descriptor with time for each frame in the action_sequence
     """
     norm_action_sequence = np.array(norm_action_sequence)
+
     first_derivatives = derivatives.first_derivative(norm_action_sequence)
     second_derivatives = derivatives.second_derivative(norm_action_sequence)
     return [norm_action_sequence, first_derivatives, second_derivatives]
@@ -99,5 +105,4 @@ def format_skeleton_data_dict(skeleton_data_dict):
     for file_name, action_sequence in skeleton_data_dict.items():
         labels = np.append(labels, file_to_label_dict[file_name[:3]])
         X.append(format_skeleton_data(action_sequence))
-
     return np.array(X), labels
