@@ -1,6 +1,5 @@
 import pickle
 from collections import defaultdict
-import numpy as np
 
 from sklearn.base import BaseEstimator
 from sklearn.exceptions import NotFittedError

@@ -41,7 +41,7 @@ print("# Correctly predicted: (higher is better)")
 best_score = sys.maxsize
 best_action_classifier = None
 for n_neighbors in [20, 25, 30]:
-    for n_training_neighbors in [2000, 5000, 10000]:
+    for n_training_neighbors in [2000, 5000, 10000, 20000, 30000, 40000]:
         for alpha in [0.75]:
             for beta in [0.6]:
                 for kappa in [20, 30, 40, 50]:
