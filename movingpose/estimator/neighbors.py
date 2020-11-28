@@ -1,6 +1,7 @@
 from collections import defaultdict
+import pickle
+import os
 
-import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.exceptions import NotFittedError
 from sklearn.neighbors import KNeighborsClassifier
@@ -29,7 +30,7 @@ class NearestPoses(BaseEstimator):
         self.is_fit = False
         self._frame_poses_dict = defaultdict(list)
 
-    def fit(self, X, y, X_is_normalized=True):
+    def fit(self, X, y, cache_path=None, X_is_normalized=True):
         """
         Fit this estimator with provided training data
 
@@ -39,6 +40,7 @@ class NearestPoses(BaseEstimator):
           Format: [[[[x, y, z, x', y', z', x'', y'', z'', t] ... (all descriptors)] ... (all poses)] .. (all actions)]
         :param y: training labels
           Format: [str(action) ... (all actions)]
+        :param cache_path: Path to cached training results
         :param X_is_normalized: boolean denoting whether or not training features are normalized
 
         Returns
@@ -56,63 +58,75 @@ class NearestPoses(BaseEstimator):
 
         self._frame_poses_dict.clear()
 
-        # all pose derivatives in the following format:
-        # [
-        #   [[x, y, z, ... (all descriptors)], ... (all poses)],
-        #   [[x', y', z', ... (all descriptors)], ... (all poses)],
-        #   [[x'', y'', z'', ... (all  descriptors)], ... (all poses)]
-        # ]
-        derivatives = [[], [], []]
+        if cache_path is None or not os.path.exists(cache_path):
+            # all pose derivatives in the following format:
+            # [
+            #   [[x, y, z, ... (all descriptors)], ... (all poses)],
+            #   [[x', y', z', ... (all descriptors)], ... (all poses)],
+            #   [[x'', y'', z'', ... (all  descriptors)], ... (all poses)]
+            # ]
+            derivatives = [[], [], []]
 
-        # all pose labels in the following format:
-        # [
-        #   str(action1), str(action1), ... (all poses in action1),
-        #   str(action2), str(action2), ... (all poses in action2),
-        # ...  (all actions)]
-        labels = []
+            # all pose labels in the following format:
+            # [
+            #   str(action1), str(action1), ... (all poses in action1),
+            #   str(action2), str(action2), ... (all poses in action2),
+            # ...  (all actions)]
+            labels = []
 
-        # each pose's frame number
-        frames = []
+            # each pose's frame number
+            frames = []
 
-        for i, action in enumerate(X):
-            for pose in action:
-                pose_descriptors = [[], [], []]
-                for descriptor in pose:
-                    pose_descriptors[0].extend(descriptor[0:3])
-                    pose_descriptors[1].extend(descriptor[3:6])
-                    pose_descriptors[2].extend(descriptor[6:9])
-                for j in range(3):
-                    derivatives[j].append(pose_descriptors[j])
-                labels.append(y[i])
-                frames.append(pose[0][-1])
+            for i, action in enumerate(X):
+                for pose in action:
+                    pose_descriptors = [[], [], []]
+                    for descriptor in pose:
+                        pose_descriptors[0].extend(descriptor[0:3])
+                        pose_descriptors[1].extend(descriptor[3:6])
+                        pose_descriptors[2].extend(descriptor[6:9])
+                    for j in range(3):
+                        derivatives[j].append(pose_descriptors[j])
+                    labels.append(y[i])
+                    frames.append(pose[0][-1])
 
-        # KNN estimator fit with `derivatives`
-        #       Format: [knn, knn', knn'']
-        traditional_knns = [
-            KNeighborsClassifier(n_neighbors=self.n_training_neighbors).fit(derivatives[i], labels) for i in range(3)
-        ]
+            # KNN estimator fit with `derivatives`
+            #       Format: [knn, knn', knn'']
+            traditional_knns = [
+                KNeighborsClassifier(n_neighbors=self.n_training_neighbors).fit(derivatives[i], labels) for i in range(3)
+            ]
 
-        # v scores for every derivative
-        #       Format: [[v, v', v''] ... (all poses) ]
-        vs = []
+            # v scores for every derivative
+            #       Format: [[v, v', v''] ... (all poses) ]
+            vs = []
 
-        for i in range(len(frames)):
-            cur_pose_derivatives = [derivatives[j][i] for j in range(3)]
-            cur_label = labels[i]
-            cur_v = []
-            for traditional_knn, cur_pose_derivative in zip(traditional_knns, cur_pose_derivatives):
-                neighbors = traditional_knn.kneighbors(
-                    [cur_pose_derivative],
-                    return_distance=False
-                )
+            for i in range(len(labels)):
+                cur_pose_derivatives = [derivatives[j][i] for j in range(3)]
+                cur_label = labels[i]
+                cur_v = []
+                for traditional_knn, cur_pose_derivative in zip(traditional_knns, cur_pose_derivatives):
+                    neighbors = traditional_knn.kneighbors(
+                        [cur_pose_derivative],
+                        return_distance=False
+                    )
 
-                same_class_sum = 0
-                for neighbor in neighbors[0]:
-                    if cur_label == neighbor:
-                        same_class_sum += 1
+                    same_class_sum = 0
+                    for neighbor in neighbors[0]:
+                        if cur_label == labels[neighbor]:
+                            same_class_sum += 1
 
-                cur_v.append(same_class_sum / len(neighbors[0]))
-            vs.append(cur_v)
+                    cur_v.append(same_class_sum / len(neighbors[0]))
+                vs.append(cur_v)
+
+            if cache_path is not None:
+                with open(cache_path, 'wb') as fp:
+                    pickle.dump(
+                        (derivatives, labels, frames, traditional_knns, vs),
+                        fp,
+                        protocol=pickle.HIGHEST_PROTOCOL
+                    )
+        else:
+            with open(cache_path, 'rb') as fp:
+                derivatives, labels, frames, traditional_knns, vs = pickle.load(fp)
 
         # setup dictionary for temporal knn
         # Format: _frame_descriptors_dict[frame] = [[pose, label, v] ... (all poses)]
@@ -120,7 +134,8 @@ class NearestPoses(BaseEstimator):
         for i in range(len(frames)):
             cur_frame = frames[i]
             cur_pose = []
-            cur_pose.extend([derivatives[j][i] for j in range(3)])
+            for j in range(0, 57, 3):
+                cur_pose.extend(derivatives[k][i][j:j+3] for k in range(3))
             cur_label = labels[i]
             cur_v = vs[i]
 

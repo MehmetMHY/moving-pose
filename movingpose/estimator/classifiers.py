@@ -36,7 +36,7 @@ class ActionClassifier(BaseEstimator):
         self.theta = theta
         self.n = n
 
-    def fit(self, X, y, actions_are_normalized=True):
+    def fit(self, X, y, cache_path=None, actions_are_normalized=True):
         """
         Fit the estimator with relevant actions
 
@@ -46,6 +46,7 @@ class ActionClassifier(BaseEstimator):
            Format: [[[[x, y, z, x', y', z', x'', y'', z'', t] ... (all descriptors)] ... (all poses)] .. (all actions)]
         :param y: list of labels denoting the type of action
            Format: [str(action) ... (all actions)]
+        :param cache_path: Path to cached training results
         :param actions_are_normalized: boolean denoting whether or not actions are normalized
 
         Returns
@@ -59,7 +60,7 @@ class ActionClassifier(BaseEstimator):
         if not actions_are_normalized:
             raise NotImplemented("Actions must be normalized")
 
-        self.nearest_pose_estimator.fit(X, y, actions_are_normalized)
+        self.nearest_pose_estimator.fit(X, y, cache_path, actions_are_normalized)
 
         return self
 
