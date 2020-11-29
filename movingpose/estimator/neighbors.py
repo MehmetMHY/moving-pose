@@ -30,7 +30,7 @@ class NearestPoses(BaseEstimator):
         self.is_fit = False
         self._frame_poses_dict = defaultdict(list)
 
-    def fit(self, X, y, cache_path=None, X_is_normalized=True):
+    def fit(self, X, y, cache_path=None, X_is_normalized=True, verbose=True):
         """
         Fit this estimator with provided training data
 
@@ -77,6 +77,8 @@ class NearestPoses(BaseEstimator):
             # each pose's frame number
             frames = []
 
+            if verbose:
+                print("Creating derivatives, labels, and frames...", end=" ")
             for i, action in enumerate(X):
                 for pose in action:
                     pose_descriptors = [[], [], []]
@@ -88,20 +90,26 @@ class NearestPoses(BaseEstimator):
                         derivatives[j].append(pose_descriptors[j])
                     labels.append(y[i])
                     frames.append(pose[0][-1])
+            if verbose:
+                print("Complete")
 
+            if verbose:
+                print("Training knns for v-scores...", end=" ")
             # KNN estimator fit with `derivatives`
             #       Format: [knn, knn', knn'']
             traditional_knns = [
                KNeighborsClassifier(n_neighbors=self.n_training_neighbors).fit(derivatives[i], labels) for i in range(3)
             ]
+            if verbose:
+                print("Complete")
 
             # v scores for every derivative
             #       Format: [[v, v', v''] ... (all poses) ]
             vs = []
 
             for i in range(len(labels)):
-                if i % 1000 == 0:
-                    print(f"Training {i/len(labels)}% complete")
+                if i % 1000 == 0 and verbose:
+                    print(f"V-Score progress: {i/len(labels)}%")
                 cur_pose_derivatives = [derivatives[j][i] for j in range(3)]
                 cur_label = labels[i]
                 cur_v = []
@@ -118,18 +126,26 @@ class NearestPoses(BaseEstimator):
 
                     cur_v.append(same_class_sum / len(neighbors[0]))
                 vs.append(cur_v)
+            if verbose:
+                print("Complete")
 
             if cache_path is not None:
+                if verbose:
+                    print("Pickling Action Classifier...", end=" ")
                 with open(cache_path, 'wb') as fp:
                     pickle.dump(
                         (derivatives, labels, frames, traditional_knns, vs),
                         fp,
                         protocol=pickle.HIGHEST_PROTOCOL
                     )
+                if verbose:
+                    print("Complete")
         else:
             with open(cache_path, 'rb') as fp:
                 derivatives, labels, frames, traditional_knns, vs = pickle.load(fp)
 
+        if verbose:
+            print("Creating self._frame_poses_dict...", end=" ")
         # setup dictionary for temporal knn
         # Format: _frame_descriptors_dict[frame] = [[pose, label, v] ... (all poses)]
         #                                   pose = [x, y, z, x', y', z', x'', y'', z'', ... (all descriptors)]
@@ -146,6 +162,10 @@ class NearestPoses(BaseEstimator):
 
             v_total = float(cur_v[0]) + self.alpha * cur_v[1] + self.beta * cur_v[2]
             self._frame_poses_dict[cur_frame].append((cur_pose, cur_label, v_total))
+        if verbose:
+            print("Complete")
+            print("---")
+            print("Training complete!")
 
         self.is_fit = True
         return self
