@@ -100,6 +100,8 @@ class NearestPoses(BaseEstimator):
             vs = []
 
             for i in range(len(labels)):
+                if i % 1000 == 0:
+                    print(f"Training {i/len(labels)}% complete")
                 cur_pose_derivatives = [derivatives[j][i] for j in range(3)]
                 cur_label = labels[i]
                 cur_v = []
