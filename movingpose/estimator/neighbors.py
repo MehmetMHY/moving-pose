@@ -109,7 +109,7 @@ class NearestPoses(BaseEstimator):
 
             for i in range(len(labels)):
                 if i % 1000 == 0 and verbose:
-                    print(f"V-Score progress: {i/len(labels)}%")
+                    print(f"V-Score progress: {round(i/len(labels), 3)*100}%")
                 cur_pose_derivatives = [derivatives[j][i] for j in range(3)]
                 cur_label = labels[i]
                 cur_v = []
