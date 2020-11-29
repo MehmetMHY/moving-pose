@@ -59,7 +59,7 @@ class ActionClassifier(BaseEstimator):
         if not actions_are_normalized:
             raise NotImplemented("Actions must be normalized")
 
-        self.nearest_pose_estimator.fit(X, y, cache_path, actions_are_normalized, verbose)
+        self.nearest_pose_estimator.fit(X, y, cache_path, actions_are_normalized, verbose=verbose)
 
         return self
 
@@ -92,7 +92,7 @@ class ActionClassifier(BaseEstimator):
         X = iter(X)
         i = 0
         while (pose := next(X, None)) is not None:
-            for nearby_pose, score in self.nearest_pose_estimator.k_poses(pose, verbose):
+            for nearby_pose, score in self.nearest_pose_estimator.k_poses(pose, verbose=verbose):
                 class_score[nearby_pose] += score
             if (i := i + 1) <= self.n:
                 continue
@@ -120,7 +120,7 @@ class ActionClassifier(BaseEstimator):
         for i in range(len(Xs)):
             if verbose:
                 print(f"Predicted {round(i/len(Xs), 3)}")
-            result.append(self.predict(Xs[i], poses_are_normalized, verbose))
+            result.append(self.predict(Xs[i], poses_are_normalized, verbose=verbose))
         return result
 
     def save_pickle(self, path):
