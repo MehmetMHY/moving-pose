@@ -1,55 +1,52 @@
 # Windows Application Element
-- Date: 10-13-2020
+- Date: 11-29-2020
 
 ![wnmf](https://user-images.githubusercontent.com/15916367/95893287-00aa5700-0d45-11eb-9cb9-14601c9545dd.jpg)
 
-## About:
-- Sadly, our Kinetc V1 sensor works best in Windows. This is due to the kinetic being a Microsoft product and the fact that its drivers are close-sourced. 
-- An attempt was made to get the Kinetic V1 sensor to work correctly with Ubuntu 20.04 and Ubuntu 16.04, but though the depth data was successfully read. The skeleton joint points were not as much of the code for this was outdated and certain drivers were no longer supported for any of the non-EOL Ubuntu verisons.
-- Because of this, the first goal was to find a way to export the data from the Kinetic from Windows 10 Ubuntu but after consideration, we decided to implment everything into Windows to avoid any major lags.
-
-## Basic Setup:
-- To see the basic setup, please view the README in kinect_skeleton_data_code/
-
-## Main Goal:
-- Get the Python code to work with Windows and C++:
-	- Use Docker or Conda
-- Get C++ to compicate with Python and vise versa
-	- Use Cython
-- Modify the SkeletonBasic-D2D code's GUI for this project
-	- Understand the code, and create new GUI in C++
-	- (if C++ fails) create a new GUI in Python (Kiviy)
-- Make the whole project and exe file
-
-
---------
-
-# Project Export Kinect V1 Skeleton Data
-- Date: 9-27-2020
-
 ## Disclaimer:
-- This code was provided by Microsoft's Kinect V1.8 ToolKit.
-- This code will mainly be used to get and send skeleton data from the Kinect Sensor.
+- We used Microsoft's Kinect V1.8 ToolKit.
+- From Kinect V1.8 ToolKit, we modified the SkeletonBasics-D2D C++ example code to receive the skeleton data from the Kinect Sensor as well as display the skeleton data in a nice GUI. 
+- The SkeletonBasics-D2D code is NOT ours, it is owned by Microsoft. We only modified it for our project which is only used for educational proposes.
+
+## About:
+- For this project, we used a Xbox 360 Kinetic v1.18 sensor as well as a Kinetic to USB converter.
+- The main data we are extracting from the Kinetic is the skeleton joint dataset.
+- A Python GUI script is used to manage how many frames the kinetic sensors collects as well as process those frames into the Moving Pose algorithm.
+- The Python and C++ script "communicate" with each other though one text file.
 
 ## Hardware:
-- Kinect V1
+- Xbox 360 Kinect Sensor v1.8
+- Kinect Sensor to USB Converter
 - PC (Windows 10)
-- Visual Studio 2019
 
 ## Software:
+- Windows 10
 - Kinect for Windows runtime v1.8 (drivers)
 - Kinect Windows Developer Toolkit v1.8.0
+- Visual Studio 2019 & VS19 C++ Add-On
+- Python3
+- Pip3
+- "all the modules/packages used in Moving Pose code"
 
-## Installs:
-- Kinect v1.8 drivers: https://www.microsoft.com/en-us/download/details.aspx?id=40277
-- Kinect v1.8 toolKit: https://www.microsoft.com/en-us/download/details.aspx?id=40276
-- Visual Studio 2019:  https://visualstudio.microsoft.com/downloads/
-
-## About:
-- The main goal of this project is to effectivly export the skeleton data from the,
-Kinect sensor to a local webserver that can be acccessed by any computer in the,
-network. So ideally, the data will come from Windows 10 but the computing for,
-Kinect based projects will be done on Linux systems.
+## Basic Setup:
+- 1) Make sure you are running Windows 10
+- 2) Install Kinect Drivers:
+		- Kinect v1.8 drivers: https://www.microsoft.com/en-us/download/details.aspx?id=40277
+		- Kinect v1.8 toolKit: https://www.microsoft.com/en-us/download/details.aspx?id=40276
+- 3) Install Visual Studio 2019 (VS19):  https://visualstudio.microsoft.com/downloads/
+		- Make sure you install any C++ add-ons if need be.
+- 4) Open SkeletonBasics-D2D/ in VS19
+- 5) Click on SkeletonBasics-D2D.sln
+- 6) Hit VS19's "Debug" button and the code should run.
+		- Go infront of the kinetic sensor and see if you can see your skeleton.
+- 7) Close Debug mode and VS19
+- 8) Go into modifications/ and move SkeletonBasics.cpp into SkeletonBasics-D2D/. Have it replace the original SkeletonBasics.cpp file.
+- 9) Go back to modifications/ and move every other file into SkeletonBasics-D2D/Debug/
+- 10) Make sure to install Python3 on Windows 10: https://www.python.org/downloads/
+- 11) Repeat Step 4 again
+- 12) Run the ai_GUI.py file in SkeletonBasics-D2D/Debug/
+- 13) Repeat Step 6
+- 14) There you go, you can now use the UI for this project.
 
 ## Credits:
 - The main way the data is being calculated and read, is though one of Microsoft's,
@@ -58,23 +55,6 @@ simple Kinect based projects that are written in C#, C++, etc.
 - The Sample used for this project is called "Skeleton Basic-D2D", which demonstrates,
 the SkeletonStream data from the Kinect by displaying it in a GUI. The code for this,
 was provided and is used. I was able to get it to compile in Visual Studio 2019.
-- This is not "my" project, due to poor documatation and how old the Kinect V1 is,
-I found this method of using this Sample code and exporting it to a web server,
-to be the most successful so far. So this is not my project, rather I am building,
-a little bit on top of all the work done by the open source community and Microsoft.
-
-## Ideas:
-- Send data from Windows 10 to Linux machine though a web server
-- Send data from Windows 10 to Linux machine though ssh
-
-## Goals:
-- Get Kinect V1 and make sure it works with Ubuntu or Windows		[X]
-- Read skeleton tracking data from Kintic Sensor		[X]
-- Find a way to export the data:
-	- get it to work on Ubuntu/Linux	(FAILED)
-	- get it to work on Windows 10
-		- send data from Windows 10 to web server
-		- have linux system read data from web server
 
 
 
