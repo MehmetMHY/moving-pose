@@ -203,7 +203,9 @@ class NearestPoses(BaseEstimator):
             relevant_poses.extend(frame_info[0] for frame_info in self._frame_poses_dict[i])
             relevant_labels_v.extend(frame_info[1:] for frame_info in self._frame_poses_dict[i])
 
-        traditional_knn = KNeighborsClassifier(n_neighbors=self.n_neighbors).fit(relevant_poses, relevant_labels_v)
+        traditional_knn = KNeighborsClassifier(
+            n_neighbors=min(self.n_neighbors, len(relevant_poses))
+        ).fit(relevant_poses, relevant_labels_v)
         neighbors = traditional_knn.kneighbors([cur_pose])[1][0]
 
         return [relevant_labels_v[label_v] for label_v in neighbors] if return_v \
