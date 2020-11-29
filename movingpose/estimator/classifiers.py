@@ -35,7 +35,7 @@ class ActionClassifier(BaseEstimator):
         self.theta = theta
         self.n = n
 
-    def fit(self, X, y, cache_path=None, actions_are_normalized=True):
+    def fit(self, X, y, cache_path=None, actions_are_normalized=True, verbose=False):
         """
         Fit the estimator with relevant actions
 
@@ -59,11 +59,11 @@ class ActionClassifier(BaseEstimator):
         if not actions_are_normalized:
             raise NotImplemented("Actions must be normalized")
 
-        self.nearest_pose_estimator.fit(X, y, cache_path, actions_are_normalized)
+        self.nearest_pose_estimator.fit(X, y, cache_path, actions_are_normalized, verbose)
 
         return self
 
-    def predict(self, X, poses_are_normalized=True):
+    def predict(self, X, poses_are_normalized=True, verbose=False):
         """
         Predict action from poses
 
@@ -92,7 +92,7 @@ class ActionClassifier(BaseEstimator):
         X = iter(X)
         i = 0
         while (pose := next(X, None)) is not None:
-            for nearby_pose, score in self.nearest_pose_estimator.k_poses(pose):
+            for nearby_pose, score in self.nearest_pose_estimator.k_poses(pose, verbose):
                 class_score[nearby_pose] += score
             if (i := i + 1) <= self.n:
                 continue
@@ -101,7 +101,7 @@ class ActionClassifier(BaseEstimator):
                 return mcs[0][0]
         return max_class_score(class_score)[0]
 
-    def predict_all(self, Xs, poses_are_normalized=True):
+    def predict_all(self, Xs, poses_are_normalized=True, verbose=False):
         """
         Predict many actions from lists of poses
         
@@ -116,7 +116,12 @@ class ActionClassifier(BaseEstimator):
         :return: Predicted action
             Format: str(action)
         """
-        return [self.predict(X, poses_are_normalized) for X in Xs]
+        result = []
+        for i in range(len(Xs)):
+            if verbose:
+                print(f"Predicted {round(i/len(Xs), 3)}")
+            result.append(self.predict(Xs[i], poses_are_normalized, verbose))
+        return result
 
     def save_pickle(self, path):
         """

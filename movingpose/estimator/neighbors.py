@@ -30,7 +30,7 @@ class NearestPoses(BaseEstimator):
         self.is_fit = False
         self._frame_poses_dict = defaultdict(list)
 
-    def fit(self, X, y, cache_path=None, X_is_normalized=True, verbose=True):
+    def fit(self, X, y, cache_path=None, X_is_normalized=True, verbose=False):
         """
         Fit this estimator with provided training data
 
@@ -158,7 +158,7 @@ class NearestPoses(BaseEstimator):
         self.is_fit = True
         return self
 
-    def k_poses(self, X, X_is_normalized=True, return_v=True):
+    def k_poses(self, X, X_is_normalized=True, return_v=True, verbose=False):
         """
         Get nearest poses
 
