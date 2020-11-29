@@ -77,8 +77,6 @@ class NearestPoses(BaseEstimator):
             # each pose's frame number
             frames = []
 
-            if verbose:
-                print("Creating derivatives, labels, and frames...", end=" ")
             for i, action in enumerate(X):
                 for pose in action:
                     pose_descriptors = [[], [], []]
@@ -90,18 +88,12 @@ class NearestPoses(BaseEstimator):
                         derivatives[j].append(pose_descriptors[j])
                     labels.append(y[i])
                     frames.append(pose[0][-1])
-            if verbose:
-                print("Complete")
 
-            if verbose:
-                print("Training knns for v-scores...", end=" ")
             # KNN estimator fit with `derivatives`
             #       Format: [knn, knn', knn'']
             traditional_knns = [
                KNeighborsClassifier(n_neighbors=self.n_training_neighbors).fit(derivatives[i], labels) for i in range(3)
             ]
-            if verbose:
-                print("Complete")
 
             # v scores for every derivative
             #       Format: [[v, v', v''] ... (all poses) ]
@@ -130,16 +122,12 @@ class NearestPoses(BaseEstimator):
                 print("Complete")
 
             if cache_path is not None:
-                if verbose:
-                    print("Pickling Action Classifier...", end=" ")
                 with open(cache_path, 'wb') as fp:
                     pickle.dump(
                         (derivatives, labels, frames, traditional_knns, vs),
                         fp,
                         protocol=pickle.HIGHEST_PROTOCOL
                     )
-                if verbose:
-                    print("Complete")
         else:
             with open(cache_path, 'rb') as fp:
                 derivatives, labels, frames, traditional_knns, vs = pickle.load(fp)
