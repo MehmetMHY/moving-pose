@@ -27,16 +27,19 @@ r_vector = [0.10476466, 0.07057415, 0.10766335, 0.40250801, 0.31667159,
             0.2313854,  0.2369734,  0.07989741, 0.08361892]
 
 
-def normalize_action_sequence(action_sequence, r):
+def normalize_action_sequence(action_sequence, r, apply_gaussian_filter):
     """
     :param action_sequence: array of (frames, 20, 5) positions for an action sequence
     :param vector with average joint segment lengths
     :return: normalized (frames, 20, 3)
     """
     normalized_frames = []
+    smoothed_action_sequence = None
+    if apply_gaussian_filter:
+        smoothed_action_sequence = gaussian_filter(np.array(action_sequence))[:, :, 1:]
+    else:
+        smoothed_action_sequence = np.array(action_sequence)[:, :, 1:]
 
-    smoothed_action_sequence = gaussian_filter(np.array(action_sequence))[:, :, 1:]
-   # action_sequence = np.array(action_sequence)[:, :, 1:]
 
     for frame in smoothed_action_sequence:
         norm_skele = skeleton_normalization.normalize_skeleton(frame, r)
@@ -56,7 +59,7 @@ def get_mp_descriptors(norm_action_sequence):
     return [norm_action_sequence, first_derivatives, second_derivatives]
 
 
-def format_skeleton_data(skeleton_data):
+def format_skeleton_data(skeleton_data, apply_gaussian_filter=True):
     """
     Format kinect skeleton data to a normalized representation centered around the hip
 
@@ -72,7 +75,7 @@ def format_skeleton_data(skeleton_data):
                         descriptor_joint_0 = [x, y, z, x', y', z', x'', y'', z'', frame_t]
                         descriptors = [descriptor_joint_0, ..., descriptor_joint_19]
     """
-    normalized_action_sequence = normalize_action_sequence(skeleton_data, r_vector)
+    normalized_action_sequence = normalize_action_sequence(skeleton_data, r_vector, apply_gaussian_filter)
     action_sequence_features = get_mp_descriptors(normalized_action_sequence)
     # cut off frames where derivatives cannot be calculated
     descriptors = []
@@ -88,7 +91,7 @@ def format_skeleton_data(skeleton_data):
     return np.array(descriptors)
 
 
-def format_skeleton_data_dict(skeleton_data_dict):
+def format_skeleton_data_dict(skeleton_data_dict, apply_gaussian_filter=True):
     """
     Format kinect skeleton data dictionary to a normalized representation centered around the hip
 
