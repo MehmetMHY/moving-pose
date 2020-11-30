@@ -203,6 +203,11 @@ class NearestPoses(BaseEstimator):
             relevant_poses.extend(frame_info[0] for frame_info in self._frame_poses_dict[i])
             relevant_labels_v.extend(frame_info[1:] for frame_info in self._frame_poses_dict[i])
 
+        if len(relevant_poses) == 0:
+            print("WARNING :: Relevant poses is empty. Exiting...")
+            print("Cur X:\n", X)
+            return []
+
         traditional_knn = KNeighborsClassifier(
             n_neighbors=min(self.n_neighbors, len(relevant_poses))
         ).fit(relevant_poses, relevant_labels_v)
