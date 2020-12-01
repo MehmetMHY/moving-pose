@@ -46,7 +46,8 @@
 - 11) Repeat Step 4 again
 - 12) Run the ai_GUI.py file in SkeletonBasics-D2D/Debug/
 - 13) Repeat Step 6
-- 14) There you go, you can now use the UI for this project.
+- 14) There you go, you can now use the UI for this project. If everything worked, the GUI should look like this:
+<img width="1075" alt="Capture" src="https://user-images.githubusercontent.com/15916367/100694383-32569c00-334c-11eb-8e84-a533c26349fb.png">
 
 ## Credits:
 - The main way the data is being calculated and read, is though one of Microsoft's,
