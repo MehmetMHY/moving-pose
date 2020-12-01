@@ -1,11 +1,11 @@
 # Windows Application Element
 - Date: 11-29-2020
 
-![wnmf](https://user-images.githubusercontent.com/15916367/95893287-00aa5700-0d45-11eb-9cb9-14601c9545dd.jpg)
+![kta-disclaimer-1024x683](https://user-images.githubusercontent.com/15916367/100694256-ead01000-334b-11eb-82ac-a208e3c46726.png)
 
 ## Disclaimer:
 - We used Microsoft's Kinect V1.8 ToolKit.
-- From Kinect V1.8 ToolKit, we modified the SkeletonBasics-D2D C++ example code to receive the skeleton data from the Kinect Sensor as well as display the skeleton data in a nice GUI. 
+- From Kinect V1.8 ToolKit, we used and modified the SkeletonBasics-D2D C++ example code to receive the skeleton data from the Kinect Sensor as well as display the skeleton data in a nice GUI. 
 - The SkeletonBasics-D2D code is NOT ours, it is owned by Microsoft. We only modified it for our project which is only used for educational proposes.
 
 ## About:
