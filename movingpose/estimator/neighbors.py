@@ -223,6 +223,6 @@ class NearestPoses(BaseEstimator):
             'n_training_neighbors': self.n_training_neighbors
         }
 
-    def str(self):
+    def __str__(self):
         return f'alpha={self.alpha}_beta={self.beta}_kappa={self.kappa}' \
                f'_n_neighbors={self.n_neighbors}_n_training_neighbors={self.n_training_neighbors}'
