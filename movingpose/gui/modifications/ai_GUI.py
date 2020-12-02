@@ -4,6 +4,7 @@ import tkinter.font as font
 from tkinter import *
 import tkinter as tk 
 import webbrowser
+import time
 import ctypes
 import os
 
@@ -47,31 +48,46 @@ def reset():
     file = open("record_frame_count.txt", "w+")
     file.write("DONE")
     results.config(text = "...")
+    file.close()
 
 # create prediction with moving pose
 def prediction():
     print("TODO - Do the AI Part!")
     results.config(text = "YOU ARE RUNNING")
 
-# comminucate between python and C++ code
-def process_frame_count(frame_count):
-    global filePath
-    if(is_int(frame_count.get()) == True):
-        state = readTextFile(filePath)
-        state = str(state[0])
-        if(state == "DONE"):
-            file = open(filePath, "w+")
-            file.write(str(frame_count.get()))
-            results.config(text = "LOADING")
-        elif(state == "DONE-RECORDING"):
-            #mb.showinfo("Result", "Running!")
-            results.config(text = "Processing...")
-            reset()
-            prediction()
-        else:
-            mb.showerror("Error", "Currently Recording, Please Wait!")
-    else:
-        mb.showerror("Error", "Please enter frame count as an int! Try Again!")
+# # comminucate between python and C++ code
+# def process_frame_count(frame_count):
+#     global filePath
+#     if(is_int(frame_count.get()) == True):
+#         state = readTextFile(filePath)
+#         state = str(state[0])
+#         if(state == "DONE"):
+#             file = open(filePath, "w+")
+#             file.write(str(frame_count.get()))
+#             results.config(text = "LOADING")
+#         elif(state == "DONE-RECORDING"):
+#             #mb.showinfo("Result", "Running!")
+#             results.config(text = "Processing...")
+#             reset()
+#             prediction()
+#         else:
+#             mb.showerror("Error", "Currently Recording, Please Wait!")
+#     else:
+#         mb.showerror("Error", "Please enter frame count as an int! Try Again!")
+
+def start_recording():
+    file = open("record_frame_count.txt", "w+")
+    file.write("100000")
+    results.config(text = "LOADING...")
+    file.close()
+
+def stop_process():
+    file = open("record_frame_count.txt", "w+")
+    file.write("STOP")
+    file.close()
+    time.sleep(3)
+    reset()
+    prediction()
 
 # clean UI's resolution for higher resolution monitors (Windows 10 only)
 ctypes.windll.shcore.SetProcessDpiAwareness(2)
@@ -116,24 +132,30 @@ menu.add_cascade(label='MovingPose', command=openPaper)
 photoIcon = PhotoImage(file = r"GUI_Icon.png") 
 Button(root, image = photoIcon, highlightbackground=bgColor).pack(side = TOP) 
 
-# setup MODE label
-Label(root, text='Modes', font=defaultLabelFont, bg='gold').pack(fill=tk.BOTH)
-addWhitespace(1)
-Label(root, text='Moving Pose', font=font.Font(family='Helvetica', size=16, slant='italic')).pack(fill=tk.BOTH)
-addWhitespace(1)
+# # setup FRAME COUNT label
+# Label(root, text='Frame Count', font=defaultLabelFont, bg='lightgreen').pack(fill=tk.BOTH)
+# addWhitespace(1)
 
-# setup FRAME COUNT label
-Label(root, text='Frame Count', font=defaultLabelFont, bg='lightgreen').pack(fill=tk.BOTH)
-addWhitespace(1)
+# # setup UI's FRAME text input
+# frame_count = StringVar()
+# Entry(root, textvariable=frame_count, font=defaultLabelFont).pack(fill=tk.BOTH)
+# process_frame_count = partial(process_frame_count, frame_count)
+# addWhitespace(1)
 
-# setup UI's FRAME text input
-frame_count = StringVar()
-Entry(root, textvariable=frame_count, font=defaultLabelFont).pack(fill=tk.BOTH)
-process_frame_count = partial(process_frame_count, frame_count)
+resultsLabelColor = 'light green'
+Label(root, text='Start Recording', font=defaultLabelFont, bg=resultsLabelColor).pack(fill=tk.BOTH)
 addWhitespace(1)
 
 # setup UI's RECORD/PROCESS button
-tk.Button(root, text='Record/Process', width=350, command=process_frame_count, highlightbackground=bgColor, font=defaultButtonFont, bg=bgButton).pack()
+tk.Button(root, text='START', width=350, command=start_recording, highlightbackground=bgColor, font=defaultButtonFont, bg=bgButton).pack()
+addWhitespace(1)
+
+resultsLabelColor = 'orange red'
+Label(root, text='Start Recording', font=defaultLabelFont, bg=resultsLabelColor).pack(fill=tk.BOTH)
+addWhitespace(1)
+
+# setup UI's RECORD/PROCESS button
+tk.Button(root, text='STOP/Process', width=350, command=stop_process, highlightbackground=bgColor, font=defaultButtonFont, bg=bgButton).pack()
 addWhitespace(1)
 
 # setup UI's RESULTS label
@@ -146,7 +168,7 @@ results.pack(fill=tk.BOTH)
 addWhitespace(2)
 
 # setup UI's RESET label 
-resetLabelColor = 'orange red'
+resetLabelColor = 'red'
 Label(root, text='RESET', font=defaultLabelFont, bg=resetLabelColor).pack(fill=tk.BOTH)
 addWhitespace(1)
 
