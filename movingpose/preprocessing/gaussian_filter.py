@@ -13,10 +13,16 @@ def create_kernel(o, n):
 #   - output: skeleton data with GF applied (x, 20, 5)
 #   - using GF does corrupt each frame's label and joint number,
 #     this will we accounted for during training.
+
 KERNEL = [0.05448868, 0.24420134, 0.40261995, 0.24420134, 0.05448868]
 
 
 def smooth_frames(frame_grouping, kernel):
+    """apply guassian filter to set of 5 frames
+    :param frame_grouping: group of n frames
+    :param kernel: n size kernel to apply to frames
+    :return guassian filtered frames
+    """
     if len(frame_grouping) != 5:
         raise Exception("Unexpected number of frames in frame grouping")
     for i in range(5):  # 1-5
@@ -35,10 +41,7 @@ def gaussian_filter(action_data, kernel=KERNEL):
     #     for joint_j in range(len(frame[frame_i])):
     #         frame[frame_i][joint_j].pop(0)
     #         frame[i][j].pop(0)
-    
-
     temp = []
-    # TOOD fix for numpy
     for frame_data_i in range(len(action_data) - 5):
         ans = []
         ans.append(action_data[frame_data_i][:, 2:])
