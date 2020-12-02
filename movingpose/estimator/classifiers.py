@@ -34,7 +34,7 @@ class ActionClassifier(BaseEstimator):
         self.theta = theta
         self.n = n
 
-    def fit(self, X, y, cache_path=None, actions_are_normalized=True, verbose=False):
+    def fit(self, X=None, y=None, cache_path=None, actions_are_normalized=True, verbose=False):
         """
         Fit the estimator with relevant actions
 
@@ -57,6 +57,9 @@ class ActionClassifier(BaseEstimator):
 
         if not actions_are_normalized:
             raise NotImplemented("Actions must be normalized")
+
+        if (X is None or y is None) and cache_path is None:
+            raise ValueError("X and y must be given if no cache path is given")
 
         self.nearest_pose_estimator.fit(X, y, cache_path, actions_are_normalized, verbose=verbose)
 
@@ -103,14 +106,14 @@ class ActionClassifier(BaseEstimator):
     def predict_all(self, Xs, poses_are_normalized=True, verbose=False):
         """
         Predict many actions from lists of poses
-        
+
         Parameters
         ----------
         :param Xs: Actions in the form of a temporally ordered lists of poses
            Format: [[[[x, y, z, x', y', z', x'', y'', z'', t] ... (all descriptors)] ... (all poses)] ... (all actions)]
         :param poses_are_normalized: boolean denoting whether or not descriptors are normalized
         :param verbose: boolean denoting whether or not verbose mode should be activated
-        
+
         Returns
         -------
         :return: Predicted action

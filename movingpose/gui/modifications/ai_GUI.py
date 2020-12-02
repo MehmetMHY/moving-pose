@@ -8,33 +8,64 @@ import time
 import ctypes
 import os
 from movingpose.estimator import classifiers
+from movingpose.estimator import neighbors
 from movingpose.preprocessing import kinect_skeleton_data
+from movingpose.preprocessing import moving_pose
 
 # add whitespace between UI's images, labels, or buttons
-action_classifier = classifiers.load_pickle('ext/best_action_classifier.p')
+def load_classifier(cache_path, parameters_path):
+    parameters = classifiers.load_pickle(parameters_path)
+    pose_params = parameters['action_classifier_params']['nearest_pose_estimator']
+    classifier_params = parameters['action_classifier_params']
+
+    nearest_pose_estimator = neighbors.NearestPoses(
+        n_neighbors=pose_params['n_neighbors'],
+        n_training_neighbors=['n_training_neighbors'],
+        alpha=pose_params['alpha'],
+        beta=pose_params['beta'],
+        kappa=pose_params['kappa']
+    )
+
+    action_classifier = classifiers.ActionClassifier(
+        nearest_pose_estimator=nearest_pose_estimator,
+        theta=classifier_params['theta'],
+        n=classifier_params['n']
+    )
+
+    action_classifier.fit(cache_path=cache_path)
+    return action_classifier
 
 
+model = load_classifier('pickle/c7f7094d/action_classifier_cache-2000.p','pickle/c7f7094d/prediction-[n=50_theta=0.3_ne\
+arest_pose_estimator=[alpha=0.75_beta=0.6_kappa=10_n_neighbors=10_n_training_neighbors=2000]].p')
+
+
+#
 def format_data():
-    raw_data = kinect_skeleton_data.parse_text('ext/data.txt')
-    normalized_descriptors = preprocessing.moving_pose.format_skeleton_data(raw_data)
+    raw_data = kinect_skeleton_data.parse_txt('ext/data.txt')
+    normalized_descriptors = moving_pose.format_skeleton_data(raw_data)
     return normalized_descriptors
 
 
-def addWhitespace(amount):
+def add_whitespace(amount):
     whitespaceFont = font.Font(family='Helvetica', size=5)
     for i in range(amount):
         Label(root, text=' ', font=whitespaceFont).pack(fill=tk.BOTH)
 
+
 # open project's GitHub web page
+# TODO delete
 def openREADME():
     webbrowser.open('https://en.wikipedia.org/wiki/Kinect') # TODO, link main project repo when made public
 
 # open "Moving Pose" research paper web page
+# TODO delete
 def openPaper():
     webbrowser.open('https://openaccess.thecvf.com/content_iccv_2013/papers/Zanfir_The_Moving_Pose_2013_ICCV_paper.pdf')
 
 # Link: https://stackoverflow.com/questions/1265665/how-can-i-check-if-a-string-represents-an-int-without-using-try-except
 # check if a string is an int or not
+
 def is_int(value):
     try:
         int(value)
@@ -42,13 +73,15 @@ def is_int(value):
     except ValueError:
         return False
 
+
 # print list indexes line by line
 def printList(data):
     for i in data:
         print(i)
 
+
 # read textfile into a list
-def readTextFile(name):
+def read_text_file(name):
     with open(name) as f:
         content = f.readlines()
     content = [x.strip() for x in content]
@@ -62,10 +95,11 @@ def reset():
     file.close()
 
 # create prediction with moving pose
-def prediction():
-    global action_classifier
+def predict():
+    global model
     normalized_data = format_data()
-    prediction = action_classifier.predict(normalized_data)
+    prediction = model.predict(normalized_data)
+    print(prediction)
     results.config(text=prediction[0])
 
 # # comminucate between python and C++ code
@@ -88,11 +122,13 @@ def prediction():
 #     else:
 #         mb.showerror("Error", "Please enter frame count as an int! Try Again!")
 
+
 def start_recording():
     file = open("record_frame_count.txt", "w+")
     file.write("100000")
     results.config(text = "LOADING...")
     file.close()
+
 
 def stop_process():
     file = open("record_frame_count.txt", "w+")
@@ -100,7 +136,7 @@ def stop_process():
     file.close()
     time.sleep(3)
     reset()
-    prediction()
+    predict()
 
 
 # clean UI's resolution for higher resolution monitors (Windows 10 only)
@@ -158,37 +194,37 @@ Button(root, image = photoIcon, highlightbackground=bgColor).pack(side = TOP)
 
 resultsLabelColor = 'light green'
 Label(root, text='Start Recording', font=defaultLabelFont, bg=resultsLabelColor).pack(fill=tk.BOTH)
-addWhitespace(1)
+add_whitespace(1)
 
 # setup UI's RECORD/PROCESS button
 tk.Button(root, text='START', width=350, command=start_recording, highlightbackground=bgColor, font=defaultButtonFont, bg=bgButton).pack()
-addWhitespace(1)
+add_whitespace(1)
 
 resultsLabelColor = 'orange red'
 Label(root, text='Start Recording', font=defaultLabelFont, bg=resultsLabelColor).pack(fill=tk.BOTH)
-addWhitespace(1)
+add_whitespace(1)
 
 # setup UI's RECORD/PROCESS button
 tk.Button(root, text='STOP/Process', width=350, command=stop_process, highlightbackground=bgColor, font=defaultButtonFont, bg=bgButton).pack()
-addWhitespace(1)
+add_whitespace(1)
 
 # setup UI's RESULTS label
 resultsLabelColor = 'light blue'
 Label(root, text='Results', font=defaultLabelFont, bg=resultsLabelColor).pack(fill=tk.BOTH)
-addWhitespace(1)
+add_whitespace(1)
 
 # setup UI's result label
 results.pack(fill=tk.BOTH)
-addWhitespace(2)
+add_whitespace(2)
 
 # setup UI's RESET label
 resetLabelColor = 'red'
 Label(root, text='RESET', font=defaultLabelFont, bg=resetLabelColor).pack(fill=tk.BOTH)
-addWhitespace(1)
+add_whitespace(1)
 
 # setup UI's RESET button
 tk.Button(root, text='<*_*>', width=350, command=reset, highlightbackground="red", font=defaultButtonFont, bg=bgButton).pack()
-addWhitespace(2)
+add_whitespace(2)
 
 # main tkinter loop
 root.mainloop()
