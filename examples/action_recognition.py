@@ -142,9 +142,9 @@ def score(n_neighbors, n_training_neighbors, alpha, beta, kappa, theta, n):
 
 
 workers = []
-for kappa in [50, 100]:
+for kappa in [50]:
     for n in [100]:
-        for theta in [0.3, 0.5, 0.7]:
+        for theta in [0.7]:
             for n_neighbors in [10, 50, 100]:
                 for n_training_neighbors in [2000, 5000, 20000]:
                     for alpha in [0.75]:
