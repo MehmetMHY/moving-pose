@@ -2,13 +2,24 @@ from tkinter import messagebox as mb
 from functools import partial
 import tkinter.font as font
 from tkinter import *
-import tkinter as tk 
+import tkinter as tk
 import webbrowser
 import time
 import ctypes
 import os
+from movingpose.estimator import classifiers
+from movingpose.preprocessing import kinect_skeleton_data
 
 # add whitespace between UI's images, labels, or buttons
+
+
+action_classifier = classifiers.load_pickle('Path to saved model')
+
+def format_data():
+    raw_data = kinect_skeleton_data.parse_text('data.txt')
+    normalized_descriptors = preprocessing.moving_pose.format_skeleton_data(raw_data)
+    return normalized_descriptors
+
 def addWhitespace(amount):
     whitespaceFont = font.Font(family='Helvetica', size=5)
     for i in range(amount):
@@ -25,7 +36,7 @@ def openPaper():
 # Link: https://stackoverflow.com/questions/1265665/how-can-i-check-if-a-string-represents-an-int-without-using-try-except
 # check if a string is an int or not
 def is_int(value):
-    try: 
+    try:
         int(value)
         return True
     except ValueError:
@@ -47,13 +58,15 @@ def readTextFile(name):
 def reset():
     file = open("record_frame_count.txt", "w+")
     file.write("DONE")
-    results.config(text = "...")
+    results.config(text="...")
     file.close()
 
 # create prediction with moving pose
 def prediction():
-    print("TODO - Do the AI Part!")
-    results.config(text = "YOU ARE RUNNING")
+    global action_classifier
+    normalized_data = format_data()
+    prediction = action_classifier.predict(normalized_data)
+    results.config(text=prediction[0])
 
 # # comminucate between python and C++ code
 # def process_frame_count(frame_count):
@@ -89,11 +102,12 @@ def stop_process():
     reset()
     prediction()
 
+
 # clean UI's resolution for higher resolution monitors (Windows 10 only)
 ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
 # setup tkinter object
-root = Tk() 
+root = Tk()
 
 # setup text fonts in UI
 defaultOptionsFont = font.Font(family='Helvetica', size=20)
@@ -122,15 +136,15 @@ root.resizable(width=False, height=False)
 root.geometry(dimensions)
 
 # menu setup for README & MovingPose
-menu = Menu(root) 
+menu = Menu(root)
 root.config(menu=menu)
-filemenu = Menu(menu) 
+filemenu = Menu(menu)
 menu.add_cascade(label='README', command=openREADME)
-menu.add_cascade(label='MovingPose', command=openPaper) 
+menu.add_cascade(label='MovingPose', command=openPaper)
 
 # UI's top image icon
-photoIcon = PhotoImage(file = r"GUI_Icon.png") 
-Button(root, image = photoIcon, highlightbackground=bgColor).pack(side = TOP) 
+photoIcon = PhotoImage(file = r"GUI_Icon.png")
+Button(root, image = photoIcon, highlightbackground=bgColor).pack(side = TOP)
 
 # # setup FRAME COUNT label
 # Label(root, text='Frame Count', font=defaultLabelFont, bg='lightgreen').pack(fill=tk.BOTH)
@@ -167,7 +181,7 @@ addWhitespace(1)
 results.pack(fill=tk.BOTH)
 addWhitespace(2)
 
-# setup UI's RESET label 
+# setup UI's RESET label
 resetLabelColor = 'red'
 Label(root, text='RESET', font=defaultLabelFont, bg=resetLabelColor).pack(fill=tk.BOTH)
 addWhitespace(1)
@@ -178,4 +192,3 @@ addWhitespace(2)
 
 # main tkinter loop
 root.mainloop()
-

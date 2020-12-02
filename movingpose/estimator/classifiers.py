@@ -17,7 +17,6 @@ def load_pickle(path):
 
 
 class ActionClassifier(BaseEstimator):
-
     def __init__(self, nearest_pose_estimator, theta=0.3, n=5):
         """
         Initialize action classifier
