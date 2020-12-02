@@ -408,7 +408,7 @@ void CSkeletonBasics::DrawSkeleton(const NUI_SKELETON_DATA & skel, int windowWid
 
     // set limit for frame recording if desired
     int limit = -1;
-    if (tp != "DONE" && tp != "NA" && tp != "DONE-RECORDING") {
+    if (tp != "DONE" && tp != "NA" && tp != "DONE-RECORDING" && tp != "STOP") {
         limit = stoi(tp);
     }
 
@@ -450,6 +450,10 @@ void CSkeletonBasics::DrawSkeleton(const NUI_SKELETON_DATA & skel, int windowWid
         }
     }
 
+    if (tp == "STOP") {
+        limit = total_frames;
+    }
+
     // save skeleton data to text file and update state text file
     if(total_frames == limit) {
         ofstream myfile;
@@ -480,7 +484,6 @@ void CSkeletonBasics::DrawSkeleton(const NUI_SKELETON_DATA & skel, int windowWid
     ////////////////////////
     ///// [ MODIFIED ] /////
     ////////////////////////
-
 
     // Render Torso
     DrawBone(skel, NUI_SKELETON_POSITION_HEAD, NUI_SKELETON_POSITION_SHOULDER_CENTER);
@@ -648,3 +651,4 @@ void CSkeletonBasics::SetStatusMessage(WCHAR * szMessage)
 {
     SendDlgItemMessageW(m_hWnd, IDC_STATUS, WM_SETTEXT, 0, (LPARAM)szMessage);
 }
+
