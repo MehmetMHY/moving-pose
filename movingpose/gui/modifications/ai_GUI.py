@@ -11,14 +11,14 @@ from movingpose.estimator import classifiers
 from movingpose.preprocessing import kinect_skeleton_data
 
 # add whitespace between UI's images, labels, or buttons
+action_classifier = classifiers.load_pickle('ext/best_action_classifier.p')
 
-
-action_classifier = classifiers.load_pickle('Path to saved model')
 
 def format_data():
-    raw_data = kinect_skeleton_data.parse_text('data.txt')
+    raw_data = kinect_skeleton_data.parse_text('ext/data.txt')
     normalized_descriptors = preprocessing.moving_pose.format_skeleton_data(raw_data)
     return normalized_descriptors
+
 
 def addWhitespace(amount):
     whitespaceFont = font.Font(family='Helvetica', size=5)
