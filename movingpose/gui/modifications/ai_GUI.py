@@ -74,7 +74,7 @@ def process_frame_count(frame_count):
         mb.showerror("Error", "Please enter frame count as an int! Try Again!")
 
 # clean UI's resolution for higher resolution monitors (Windows 10 only)
-# ctypes.windll.shcore.SetProcessDpiAwareness(2)
+ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
 # setup tkinter object
 root = Tk() 

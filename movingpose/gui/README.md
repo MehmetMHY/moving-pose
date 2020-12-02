@@ -1,11 +1,11 @@
 # Windows Application Element
 - Date: 11-29-2020
 
-![wnmf](https://user-images.githubusercontent.com/15916367/95893287-00aa5700-0d45-11eb-9cb9-14601c9545dd.jpg)
+![kta-disclaimer-1024x683](https://user-images.githubusercontent.com/15916367/100694256-ead01000-334b-11eb-82ac-a208e3c46726.png)
 
 ## Disclaimer:
 - We used Microsoft's Kinect V1.8 ToolKit.
-- From Kinect V1.8 ToolKit, we modified the SkeletonBasics-D2D C++ example code to receive the skeleton data from the Kinect Sensor as well as display the skeleton data in a nice GUI. 
+- From Kinect V1.8 ToolKit, we used and modified the SkeletonBasics-D2D C++ example code to receive the skeleton data from the Kinect Sensor as well as display the skeleton data in a nice GUI. 
 - The SkeletonBasics-D2D code is NOT ours, it is owned by Microsoft. We only modified it for our project which is only used for educational proposes.
 
 ## About:
@@ -46,7 +46,8 @@
 - 11) Repeat Step 4 again
 - 12) Run the ai_GUI.py file in SkeletonBasics-D2D/Debug/
 - 13) Repeat Step 6
-- 14) There you go, you can now use the UI for this project.
+- 14) There you go, you can now use the UI for this project. If everything worked, the GUI should look like this:
+<img width="1075" alt="Capture" src="https://user-images.githubusercontent.com/15916367/100694383-32569c00-334c-11eb-8e84-a533c26349fb.png">
 
 ## Credits:
 - The main way the data is being calculated and read, is though one of Microsoft's,
