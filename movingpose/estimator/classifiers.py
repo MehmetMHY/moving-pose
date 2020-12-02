@@ -110,6 +110,7 @@ class ActionClassifier(BaseEstimator):
         :param Xs: Actions in the form of a temporally ordered lists of poses
            Format: [[[[x, y, z, x', y', z', x'', y'', z'', t] ... (all descriptors)] ... (all poses)] ... (all actions)]
         :param poses_are_normalized: boolean denoting whether or not descriptors are normalized
+        :param verbose: boolean denoting whether or not verbose mode should be activated
         
         Returns
         -------
@@ -118,8 +119,8 @@ class ActionClassifier(BaseEstimator):
         """
         result = []
         for i in range(len(Xs)):
-            if verbose:
-                print(f"Predicted {round(i/len(Xs), 3)}")
+            if i % 10 == 0 and verbose:
+                print(f"Predicted {round(i/len(Xs), 3)*100}%")
             result.append(self.predict(Xs[i], poses_are_normalized, verbose=verbose))
         return result
 

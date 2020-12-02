@@ -204,8 +204,8 @@ class NearestPoses(BaseEstimator):
             relevant_labels_v.extend(frame_info[1:] for frame_info in self._frame_poses_dict[i])
 
         if len(relevant_poses) == 0:
-            print("WARNING :: Relevant poses is empty. Exiting...")
-            print("Cur X:\n", X)
+            if verbose:
+                print("WARNING :: Relevant poses is empty. Exiting...")
             return []
 
         traditional_knn = KNeighborsClassifier(
