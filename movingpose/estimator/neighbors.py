@@ -215,3 +215,14 @@ class NearestPoses(BaseEstimator):
 
         return [relevant_labels_v[label_v] for label_v in neighbors] if return_v \
             else [relevant_labels_v[label_v][0] for label_v in neighbors]
+
+    def get_params(self, deep=True):
+        return {
+            'alpha': self.alpha, 'beta': self.beta,
+            'kappa': self.kappa, 'n_neighbors': self.n_neighbors,
+            'n_training_neighbors': self.n_training_neighbors
+        }
+
+    def str(self):
+        return f'alpha={self.alpha}_beta={self.beta}_kappa={self.kappa}' \
+               f'_n_neighbors={self.n_neighbors}_n_training_neighbors={self.n_training_neighbors}'

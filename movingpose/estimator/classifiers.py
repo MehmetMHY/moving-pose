@@ -123,18 +123,15 @@ class ActionClassifier(BaseEstimator):
             result.append(self.predict(Xs[i], poses_are_normalized, verbose=verbose))
         return result
 
-    def save_pickle(self, path):
+    def get_params(self, deep=True):
         """
         Save `self` to a pickle file located at the provided `path`
 
         Parameters
         ----------
-        :param path: Save location
+        :param deep: boolean denoting whether or not to recursively get parameters
         """
-        if path[-2:] == ".p":
-            path = path
-        else:
-            path = str(path + ".p")
+        return {'theta': self.theta, 'n': self.n, "nearest_pose_estimator": self.nearest_pose_estimator.get_params()}
 
-        with open(path, 'wb') as fp:
-            pickle.dump(self, fp, protocol=pickle.HIGHEST_PROTOCOL)
+    def __str__(self):
+        return f'n={self.n}_theta={self.theta}_nearest_pose_estimator=[{self.nearest_pose_estimator}]'
