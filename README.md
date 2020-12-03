@@ -1,6 +1,7 @@
-# Team Nestlé CSCI470 Project
+# Moving Pose
+#### - Team Nestlé CSCI470 Project
 
-<img width="350" alt="3" src="https://user-images.githubusercontent.com/15916367/94550311-c1dab400-0210-11eb-92df-8e0064d639de.jpg">
+![404](https://user-images.githubusercontent.com/15916367/100955370-a8d1d600-34d3-11eb-96f8-fdf94ea4b402.png)
 
 ## Members:
 - Andrew Darling

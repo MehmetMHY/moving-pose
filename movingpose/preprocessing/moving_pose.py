@@ -2,7 +2,7 @@ import numpy as np
 
 from movingpose.preprocessing import kinect_skeleton_data
 from movingpose.preprocessing import gaussian_filter
-
+from movingpose.logic import iterators
 
 file_to_label_dict = {'a01': 'drink',
                       'a02': 'eat',
@@ -52,7 +52,7 @@ def normalize_skeleton(joint_data, R):
     :return: joint data 20, 3 matrix of all 20 joints in kinect skeleton normalized
     """
     joints = zero_to_hip(joint_data)
-    skele = Skeleton(joints)
+    skele = iterators.Skeleton(joints)
     joints = skele.get_joints()
     norm_joints = list([None] * 20)
     norm_joints[0] = skele.get_joints()[1]

@@ -5,7 +5,7 @@ from tkinter import *
 import tkinter as tk
 import webbrowser
 import time
-import ctypes
+# import ctypes
 import os
 from movingpose.estimator import classifiers
 from movingpose.estimator import neighbors
@@ -36,13 +36,13 @@ def load_classifier(cache_path, parameters_path):
     return action_classifier
 
 
-model = load_classifier('pickle/c7f7094d/action_classifier_cache-2000.p','pickle/c7f7094d/prediction-[n=50_theta=0.3_ne\
-arest_pose_estimator=[alpha=0.75_beta=0.6_kappa=10_n_neighbors=10_n_training_neighbors=2000]].p')
-
+model = load_classifier('../../../pickle/c7f7094d/action_classifier_cache-5000.p',
+                        '../../../pickle/c7f7094d/prediction-[n=50_theta=0.5_nearest_pose_estimator=[alpha=0.75_beta'
+                        '=0.6_kappa=10_n_neighbors=100_n_training_neighbors=5000]].p')
 
 #
 def format_data():
-    raw_data = kinect_skeleton_data.parse_txt('ext/data.txt')
+    raw_data = kinect_skeleton_data.parse_txt('data.txt')
     normalized_descriptors = moving_pose.format_skeleton_data(raw_data)
     return normalized_descriptors
 
@@ -99,28 +99,9 @@ def predict():
     global model
     normalized_data = format_data()
     prediction = model.predict(normalized_data)
-    print(prediction)
-    results.config(text=prediction[0])
-
-# # comminucate between python and C++ code
-# def process_frame_count(frame_count):
-#     global filePath
-#     if(is_int(frame_count.get()) == True):
-#         state = readTextFile(filePath)
-#         state = str(state[0])
-#         if(state == "DONE"):
-#             file = open(filePath, "w+")
-#             file.write(str(frame_count.get()))
-#             results.config(text = "LOADING")
-#         elif(state == "DONE-RECORDING"):
-#             #mb.showinfo("Result", "Running!")
-#             results.config(text = "Processing...")
-#             reset()
-#             prediction()
-#         else:
-#             mb.showerror("Error", "Currently Recording, Please Wait!")
-#     else:
-#         mb.showerror("Error", "Please enter frame count as an int! Try Again!")
+    if isinstance(prediction, tuple):
+        prediction = prediction[0]
+    results.config(text=prediction)
 
 
 def start_recording():
@@ -140,7 +121,7 @@ def stop_process():
 
 
 # clean UI's resolution for higher resolution monitors (Windows 10 only)
-ctypes.windll.shcore.SetProcessDpiAwareness(2)
+# ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
 # setup tkinter object
 root = Tk()
@@ -178,19 +159,6 @@ filemenu = Menu(menu)
 menu.add_cascade(label='README', command=openREADME)
 menu.add_cascade(label='MovingPose', command=openPaper)
 
-# UI's top image icon
-photoIcon = PhotoImage(file = r"GUI_Icon.png")
-Button(root, image = photoIcon, highlightbackground=bgColor).pack(side = TOP)
-
-# # setup FRAME COUNT label
-# Label(root, text='Frame Count', font=defaultLabelFont, bg='lightgreen').pack(fill=tk.BOTH)
-# addWhitespace(1)
-
-# # setup UI's FRAME text input
-# frame_count = StringVar()
-# Entry(root, textvariable=frame_count, font=defaultLabelFont).pack(fill=tk.BOTH)
-# process_frame_count = partial(process_frame_count, frame_count)
-# addWhitespace(1)
 
 resultsLabelColor = 'light green'
 Label(root, text='Start Recording', font=defaultLabelFont, bg=resultsLabelColor).pack(fill=tk.BOTH)
