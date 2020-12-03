@@ -1,4 +1,5 @@
-# Team Nestlé CSCI470 Project
+# Moving Pose
+#### - Team Nestlé CSCI470 Project
 
 ![404](https://user-images.githubusercontent.com/15916367/100955370-a8d1d600-34d3-11eb-96f8-fdf94ea4b402.png)
 
