@@ -1,7 +1,7 @@
 # Moving Pose
 #### - Team Nestlé CSCI470 Project
 
-![404](https://user-images.githubusercontent.com/15916367/100955370-a8d1d600-34d3-11eb-96f8-fdf94ea4b402.png)
+<img src="https://user-images.githubusercontent.com/15916367/100955370-a8d1d600-34d3-11eb-96f8-fdf94ea4b402.png" width="300">
 
 ## Members:
 - Andrew Darling
@@ -9,8 +9,8 @@
 - Mehmet Yilmaz
 
 ## About:
-- Given a skeleton based dataset collected from a depth sensor, the goal is to classify certain human actions using the Moving Pose method. 
-- This is the our Fall 2020 CSCI470 Semester Project for the Colorado School of Mines.
+- Given a skeleton based dataset collected from a depth sensor, the goal is to classify certain human actions using the Moving Pose algorithm. 
+- This is our Fall 2020 CSCI470 Semester Project for the Colorado School of Mines.
 - We are implmenting the following research paper for this project:
   - https://openaccess.thecvf.com/content_iccv_2013/papers/Zanfir_The_Moving_Pose_2013_ICCV_paper.pdf
 - We used the MSR DailyActivity 3D Dataset dataset:
