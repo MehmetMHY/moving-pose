@@ -1,7 +1,7 @@
 # Windows Application Element
 - Date: 11-29-2020
 
-![kta-disclaimer-1024x683](https://user-images.githubusercontent.com/15916367/100694256-ead01000-334b-11eb-82ac-a208e3c46726.png)
+<img width="400" alt="duprm" src="https://user-images.githubusercontent.com/15916367/107866184-0e730480-6e2b-11eb-99bc-63ceed239704.png">
 
 ## Disclaimer:
 - We used Microsoft's Kinect V1.8 ToolKit.
