@@ -1,3 +1,7 @@
+---
+# ***DEPRECATED (October 2021)***
+---
+
 # Moving Pose
 - Team Nestlé CSCI470 Project
 
