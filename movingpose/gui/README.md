@@ -1,7 +1,7 @@
 # Windows Application Element
 - Date: 11-29-2020
 
-<img width="400" alt="duprm" src="https://user-images.githubusercontent.com/15916367/107866184-0e730480-6e2b-11eb-99bc-63ceed239704.png">
+<img width="400" alt="duprm" src="../../assets/warning1.png">
 
 ## Disclaimer:
 - We used Microsoft's Kinect V1.8 ToolKit.
@@ -47,7 +47,7 @@
 - 12) Run the ai_GUI.py file in SkeletonBasics-D2D/Debug/
 - 13) Repeat Step 6
 - 14) There you go, you can now use the UI for this project. If everything worked, the GUI should look like this:
-<img width="1075" alt="Capture" src="https://user-images.githubusercontent.com/15916367/100694383-32569c00-334c-11eb-8e84-a533c26349fb.png">
+<img width="1075" alt="Capture" src="../../assets/gui_demo.png">
 
 ## Credits:
 - The main way the data is being calculated and read, is though one of Microsoft's,

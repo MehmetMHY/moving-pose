@@ -5,7 +5,7 @@
 # Moving Pose
 - Team Nestlé CSCI470 Project
 
-<img src="https://user-images.githubusercontent.com/15916367/100955370-a8d1d600-34d3-11eb-96f8-fdf94ea4b402.png" width="300">
+<img src="./assets/mpg.png" width="300">
 
 ## Members:
 - Andrew Darling
@@ -26,4 +26,4 @@
 ## Dataset Used:
 - We used the MSR DailyActivity 3D Dataset dataset: [Dataset_Source](https://wangjiangb.github.io/my_data.html)
 - Multiview Action 3D Dataset Action IDs:
-<img width="701" alt="3" src="https://user-images.githubusercontent.com/15916367/85251734-4bf7cd00-b417-11ea-8003-de9340da3c0c.png">
+<img width="701" alt="3" src="./assets/ma3da_ids.png">
