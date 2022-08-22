@@ -29,4 +29,5 @@
 <img width="701" alt="3" src="./assets/ma3da_ids.png">
 
 ## Our Presentation:
-- You can view our presentation of this project for CSCI470 here: [Moving Pose - CSCI470 Final Project](https://www.youtube.com/watch?v=pX5QDDYOHjU)
+- You can view our presentation of this project for CSCI470 here:
+  - [Moving Pose - CSCI470 Final Project](https://www.youtube.com/watch?v=pX5QDDYOHjU)
