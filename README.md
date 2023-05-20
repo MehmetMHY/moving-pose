@@ -1,7 +1,3 @@
----
-# ***DEPRECATED (October 2021)***
----
-
 # Moving Pose
 
 ## Our Presentation:
