@@ -21,7 +21,7 @@
 - This is our Fall 2020 CSCI470 (Introduction to Machine Learning) final Project. CSCI470 is an undergraduate class provided at the Colorado School of Mines. Our team name was: Nestlé.
 - Please view /movingpose/gui/README.md to learn more about the GUI and the hardware(s) used.
 
-## Paper Implmented:
+## Paper Implemented:
 
 - **Title:** _The Moving Pose: An Efficient 3D Kinematics Descriptor for Low-Latency Action Recognition and Detection_
 - **Authors:** Mihai Zanfir, Marius Leordeanu, & Cristian Sminchisescu.
