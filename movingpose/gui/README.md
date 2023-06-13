@@ -1,7 +1,9 @@
 # Windows Application Element
 - Date: 11-29-2020
 
-<img width="400" alt="duprm" src="../../assets/warning1.png">
+<p align="center">
+  <img width="250" alt="duprm" src="../../assets/warning1.png">
+</p>
 
 ## Disclaimer:
 - We used Microsoft's Kinect V1.8 ToolKit.
@@ -29,24 +31,24 @@
 - "all the modules/packages used in Moving Pose code"
 
 ## Basic Setup:
-- 1) Make sure you are running Windows 10
-- 2) Install Kinect Drivers:
-		- Kinect v1.8 drivers: https://www.microsoft.com/en-us/download/details.aspx?id=40277
-		- Kinect v1.8 toolKit: https://www.microsoft.com/en-us/download/details.aspx?id=40276
-- 3) Install Visual Studio 2019 (VS19):  https://visualstudio.microsoft.com/downloads/
-		- Make sure you install any C++ add-ons if need be.
-- 4) Open SkeletonBasics-D2D/ in VS19
-- 5) Click on SkeletonBasics-D2D.sln
-- 6) Hit VS19's "Debug" button and the code should run.
-		- Go infront of the kinetic sensor and see if you can see your skeleton.
-- 7) Close Debug mode and VS19
-- 8) Go into modifications/ and move SkeletonBasics.cpp into SkeletonBasics-D2D/. Have it replace the original SkeletonBasics.cpp file.
-- 9) Go back to modifications/ and move every other file into SkeletonBasics-D2D/Debug/
-- 10) Make sure to install Python3 on Windows 10: https://www.python.org/downloads/
-- 11) Repeat Step 4 again
-- 12) Run the ai_GUI.py file in SkeletonBasics-D2D/Debug/
-- 13) Repeat Step 6
-- 14) There you go, you can now use the UI for this project. If everything worked, the GUI should look like this:
+1) Make sure you are running Windows 10
+2) Install Kinect Drivers:
+	- Kinect v1.8 drivers: https://www.microsoft.com/en-us/download/details.aspx?id=40277
+	- Kinect v1.8 toolKit: https://www.microsoft.com/en-us/download/details.aspx?id=40276
+3) Install Visual Studio 2019 (VS19):  https://visualstudio.microsoft.com/downloads/
+	- Make sure you install any C++ add-ons if need be.
+4) Open SkeletonBasics-D2D/ in VS19
+5) Click on SkeletonBasics-D2D.sln
+6) Hit VS19's "Debug" button and the code should run.
+	- Go infront of the kinetic sensor and see if you can see your skeleton.
+7) Close Debug mode and VS19
+8) Go into modifications/ and move SkeletonBasics.cpp into SkeletonBasics-D2D/. Have it replace the original SkeletonBasics.cpp file.
+9) Go back to modifications/ and move every other file into SkeletonBasics-D2D/Debug/
+10) Make sure to install Python3 on Windows 10: https://www.python.org/downloads/
+11) Repeat Step 4 again
+12) Run the ai_GUI.py file in SkeletonBasics-D2D/Debug/
+13) Repeat Step 6
+14) There you go, you can now use the UI for this project. If everything worked, the GUI should look like this:
 <img width="1075" alt="Capture" src="../../assets/gui_demo.png">
 
 ## Credits:
