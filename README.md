@@ -1,12 +1,11 @@
 # Moving Pose
 
-## Our Presentation:
-
-<td style="text-align: center;">
+<p align="center">
   <a href="https://www.youtube.com/watch?v=pX5QDDYOHjU" title="Project's Presentation">
     <img src="./assets/thumbnail.png" width="500">
   </a>
-</td>
+</p>
+<p align="center"><em><strong>Our Presentation (December 2020)</strong></em></p>
 
 ## Members:
 
