@@ -1,0 +1,413 @@
+.
+├── Debug
+│   ├── GUI_Icon.PNG
+│   ├── LICENSE
+│   ├── MovingPose.py
+│   ├── README.md
+│   ├── Skeleton.A0E290C0.tlog
+│   │   ├── CL.command.1.tlog
+│   │   ├── CL.read.1.tlog
+│   │   ├── CL.write.1.tlog
+│   │   ├── SkeletonBasics-D2D.lastbuildstate
+│   │   ├── link.command.1.tlog
+│   │   ├── link.read.1.tlog
+│   │   ├── link.write.1.tlog
+│   │   ├── rc.command.1.tlog
+│   │   ├── rc.read.1.tlog
+│   │   └── rc.write.1.tlog
+│   ├── SkeletonBasics-D2D.exe
+│   ├── SkeletonBasics-D2D.exe.recipe
+│   ├── SkeletonBasics-D2D.ilk
+│   ├── SkeletonBasics-D2D.log
+│   ├── SkeletonBasics-D2D.pdb
+│   ├── SkeletonBasics-D2D.vcxproj.FileListAbsolute.txt
+│   ├── SkeletonBasics.obj
+│   ├── SkeletonBasics.res
+│   ├── ai_GUI.py
+│   ├── data.txt
+│   ├── examples
+│   │   ├── action_recognition.ipynb
+│   │   ├── action_recognition.py
+│   │   ├── model_analysis.ipynb
+│   │   ├── skeleton-animation.ipynb
+│   │   ├── skeleton-normalization-visualization.ipynb
+│   │   ├── taylor-approximation-visualizer.ipynb
+│   │   ├── wave.gif
+│   │   └── wave.mp4
+│   ├── ext
+│   │   ├── best_action_classifier.p
+│   │   ├── data.txt
+│   │   ├── dataset
+│   │   │   └── multiview_action
+│   │   │       ├── a01_s01_e01_skeleton_proj.txt
+│   │   │       ├── a01_s01_e02_skeleton_proj.txt
+│   │   │       ├── a01_s02_e01_skeleton_proj.txt
+│   │   │       ├── a01_s02_e02_skeleton_proj.txt
+│   │   │       ├── a01_s03_e01_skeleton_proj.txt
+│   │   │       ├── a01_s03_e02_skeleton_proj.txt
+│   │   │       ├── a01_s04_e01_skeleton_proj.txt
+│   │   │       ├── a01_s04_e02_skeleton_proj.txt
+│   │   │       ├── a01_s05_e01_skeleton_proj.txt
+│   │   │       ├── a01_s05_e02_skeleton_proj.txt
+│   │   │       ├── a01_s06_e01_skeleton_proj.txt
+│   │   │       ├── a01_s06_e02_skeleton_proj.txt
+│   │   │       ├── a01_s07_e01_skeleton_proj.txt
+│   │   │       ├── a01_s07_e02_skeleton_proj.txt
+│   │   │       ├── a01_s08_e01_skeleton_proj.txt
+│   │   │       ├── a01_s08_e02_skeleton_proj.txt
+│   │   │       ├── a01_s09_e01_skeleton_proj.txt
+│   │   │       ├── a01_s09_e02_skeleton_proj.txt
+│   │   │       ├── a01_s10_e01_skeleton_proj.txt
+│   │   │       ├── a01_s10_e02_skeleton_proj.txt
+│   │   │       ├── a02_s01_e01_skeleton_proj.txt
+│   │   │       ├── a02_s01_e02_skeleton_proj.txt
+│   │   │       ├── a02_s02_e01_skeleton_proj.txt
+│   │   │       ├── a02_s02_e02_skeleton_proj.txt
+│   │   │       ├── a02_s03_e01_skeleton_proj.txt
+│   │   │       ├── a02_s03_e02_skeleton_proj.txt
+│   │   │       ├── a02_s04_e01_skeleton_proj.txt
+│   │   │       ├── a02_s04_e02_skeleton_proj.txt
+│   │   │       ├── a02_s05_e01_skeleton_proj.txt
+│   │   │       ├── a02_s05_e02_skeleton_proj.txt
+│   │   │       ├── a02_s06_e01_skeleton_proj.txt
+│   │   │       ├── a02_s06_e02_skeleton_proj.txt
+│   │   │       ├── a02_s07_e01_skeleton_proj.txt
+│   │   │       ├── a02_s07_e02_skeleton_proj.txt
+│   │   │       ├── a02_s08_e01_skeleton_proj.txt
+│   │   │       ├── a02_s08_e02_skeleton_proj.txt
+│   │   │       ├── a02_s09_e01_skeleton_proj.txt
+│   │   │       ├── a02_s09_e02_skeleton_proj.txt
+│   │   │       ├── a02_s10_e01_skeleton_proj.txt
+│   │   │       ├── a02_s10_e02_skeleton_proj.txt
+│   │   │       ├── a03_s01_e01_skeleton_proj.txt
+│   │   │       ├── a03_s01_e02_skeleton_proj.txt
+│   │   │       ├── a03_s02_e01_skeleton_proj.txt
+│   │   │       ├── a03_s02_e02_skeleton_proj.txt
+│   │   │       ├── a03_s03_e01_skeleton_proj.txt
+│   │   │       ├── a03_s03_e02_skeleton_proj.txt
+│   │   │       ├── a03_s04_e01_skeleton_proj.txt
+│   │   │       ├── a03_s04_e02_skeleton_proj.txt
+│   │   │       ├── a03_s05_e01_skeleton_proj.txt
+│   │   │       ├── a03_s05_e02_skeleton_proj.txt
+│   │   │       ├── a03_s06_e01_skeleton_proj.txt
+│   │   │       ├── a03_s06_e02_skeleton_proj.txt
+│   │   │       ├── a03_s07_e01_skeleton_proj.txt
+│   │   │       ├── a03_s07_e02_skeleton_proj.txt
+│   │   │       ├── a03_s08_e01_skeleton_proj.txt
+│   │   │       ├── a03_s08_e02_skeleton_proj.txt
+│   │   │       ├── a03_s09_e01_skeleton_proj.txt
+│   │   │       ├── a03_s09_e02_skeleton_proj.txt
+│   │   │       ├── a03_s10_e01_skeleton_proj.txt
+│   │   │       ├── a03_s10_e02_skeleton_proj.txt
+│   │   │       ├── a04_s01_e01_skeleton_proj.txt
+│   │   │       ├── a04_s01_e02_skeleton_proj.txt
+│   │   │       ├── a04_s02_e01_skeleton_proj.txt
+│   │   │       ├── a04_s02_e02_skeleton_proj.txt
+│   │   │       ├── a04_s03_e01_skeleton_proj.txt
+│   │   │       ├── a04_s03_e02_skeleton_proj.txt
+│   │   │       ├── a04_s04_e01_skeleton_proj.txt
+│   │   │       ├── a04_s04_e02_skeleton_proj.txt
+│   │   │       ├── a04_s05_e01_skeleton_proj.txt
+│   │   │       ├── a04_s05_e02_skeleton_proj.txt
+│   │   │       ├── a04_s06_e01_skeleton_proj.txt
+│   │   │       ├── a04_s06_e02_skeleton_proj.txt
+│   │   │       ├── a04_s07_e01_skeleton_proj.txt
+│   │   │       ├── a04_s07_e02_skeleton_proj.txt
+│   │   │       ├── a04_s08_e01_skeleton_proj.txt
+│   │   │       ├── a04_s08_e02_skeleton_proj.txt
+│   │   │       ├── a04_s09_e01_skeleton_proj.txt
+│   │   │       ├── a04_s09_e02_skeleton_proj.txt
+│   │   │       ├── a04_s10_e01_skeleton_proj.txt
+│   │   │       ├── a04_s10_e02_skeleton_proj.txt
+│   │   │       ├── a05_s01_e01_skeleton_proj.txt
+│   │   │       ├── a05_s01_e02_skeleton_proj.txt
+│   │   │       ├── a05_s02_e01_skeleton_proj.txt
+│   │   │       ├── a05_s02_e02_skeleton_proj.txt
+│   │   │       ├── a05_s03_e01_skeleton_proj.txt
+│   │   │       ├── a05_s03_e02_skeleton_proj.txt
+│   │   │       ├── a05_s04_e01_skeleton_proj.txt
+│   │   │       ├── a05_s04_e02_skeleton_proj.txt
+│   │   │       ├── a05_s05_e01_skeleton_proj.txt
+│   │   │       ├── a05_s05_e02_skeleton_proj.txt
+│   │   │       ├── a05_s06_e01_skeleton_proj.txt
+│   │   │       ├── a05_s06_e02_skeleton_proj.txt
+│   │   │       ├── a05_s07_e01_skeleton_proj.txt
+│   │   │       ├── a05_s07_e02_skeleton_proj.txt
+│   │   │       ├── a05_s08_e01_skeleton_proj.txt
+│   │   │       ├── a05_s08_e02_skeleton_proj.txt
+│   │   │       ├── a05_s09_e01_skeleton_proj.txt
+│   │   │       ├── a05_s09_e02_skeleton_proj.txt
+│   │   │       ├── a05_s10_e01_skeleton_proj.txt
+│   │   │       ├── a05_s10_e02_skeleton_proj.txt
+│   │   │       ├── a06_s01_e01_skeleton_proj.txt
+│   │   │       ├── a06_s01_e02_skeleton_proj.txt
+│   │   │       ├── a06_s02_e01_skeleton_proj.txt
+│   │   │       ├── a06_s02_e02_skeleton_proj.txt
+│   │   │       ├── a06_s03_e01_skeleton_proj.txt
+│   │   │       ├── a06_s03_e02_skeleton_proj.txt
+│   │   │       ├── a06_s04_e01_skeleton_proj.txt
+│   │   │       ├── a06_s04_e02_skeleton_proj.txt
+│   │   │       ├── a06_s05_e01_skeleton_proj.txt
+│   │   │       ├── a06_s05_e02_skeleton_proj.txt
+│   │   │       ├── a06_s06_e01_skeleton_proj.txt
+│   │   │       ├── a06_s06_e02_skeleton_proj.txt
+│   │   │       ├── a06_s07_e01_skeleton_proj.txt
+│   │   │       ├── a06_s07_e02_skeleton_proj.txt
+│   │   │       ├── a06_s08_e01_skeleton_proj.txt
+│   │   │       ├── a06_s08_e02_skeleton_proj.txt
+│   │   │       ├── a06_s09_e01_skeleton_proj.txt
+│   │   │       ├── a06_s09_e02_skeleton_proj.txt
+│   │   │       ├── a06_s10_e01_skeleton_proj.txt
+│   │   │       ├── a06_s10_e02_skeleton_proj.txt
+│   │   │       ├── a07_s01_e01_skeleton_proj.txt
+│   │   │       ├── a07_s01_e02_skeleton_proj.txt
+│   │   │       ├── a07_s02_e01_skeleton_proj.txt
+│   │   │       ├── a07_s02_e02_skeleton_proj.txt
+│   │   │       ├── a07_s03_e01_skeleton_proj.txt
+│   │   │       ├── a07_s03_e02_skeleton_proj.txt
+│   │   │       ├── a07_s04_e01_skeleton_proj.txt
+│   │   │       ├── a07_s04_e02_skeleton_proj.txt
+│   │   │       ├── a07_s05_e01_skeleton_proj.txt
+│   │   │       ├── a07_s05_e02_skeleton_proj.txt
+│   │   │       ├── a07_s06_e01_skeleton_proj.txt
+│   │   │       ├── a07_s06_e02_skeleton_proj.txt
+│   │   │       ├── a07_s07_e01_skeleton_proj.txt
+│   │   │       ├── a07_s07_e02_skeleton_proj.txt
+│   │   │       ├── a07_s08_e01_skeleton_proj.txt
+│   │   │       ├── a07_s08_e02_skeleton_proj.txt
+│   │   │       ├── a07_s09_e01_skeleton_proj.txt
+│   │   │       ├── a07_s09_e02_skeleton_proj.txt
+│   │   │       ├── a07_s10_e01_skeleton_proj.txt
+│   │   │       ├── a07_s10_e02_skeleton_proj.txt
+│   │   │       ├── a08_s01_e01_skeleton_proj.txt
+│   │   │       ├── a08_s01_e02_skeleton_proj.txt
+│   │   │       ├── a08_s02_e01_skeleton_proj.txt
+│   │   │       ├── a08_s02_e02_skeleton_proj.txt
+│   │   │       ├── a08_s03_e01_skeleton_proj.txt
+│   │   │       ├── a08_s03_e02_skeleton_proj.txt
+│   │   │       ├── a08_s04_e01_skeleton_proj.txt
+│   │   │       ├── a08_s04_e02_skeleton_proj.txt
+│   │   │       ├── a08_s05_e01_skeleton_proj.txt
+│   │   │       ├── a08_s05_e02_skeleton_proj.txt
+│   │   │       ├── a08_s06_e01_skeleton_proj.txt
+│   │   │       ├── a08_s06_e02_skeleton_proj.txt
+│   │   │       ├── a08_s07_e01_skeleton_proj.txt
+│   │   │       ├── a08_s07_e02_skeleton_proj.txt
+│   │   │       ├── a08_s08_e01_skeleton_proj.txt
+│   │   │       ├── a08_s08_e02_skeleton_proj.txt
+│   │   │       ├── a08_s09_e01_skeleton_proj.txt
+│   │   │       ├── a08_s09_e02_skeleton_proj.txt
+│   │   │       ├── a08_s10_e01_skeleton_proj.txt
+│   │   │       ├── a08_s10_e02_skeleton_proj.txt
+│   │   │       ├── a09_s01_e01_skeleton_proj.txt
+│   │   │       ├── a09_s01_e02_skeleton_proj.txt
+│   │   │       ├── a09_s02_e01_skeleton_proj.txt
+│   │   │       ├── a09_s02_e02_skeleton_proj.txt
+│   │   │       ├── a09_s03_e01_skeleton_proj.txt
+│   │   │       ├── a09_s03_e02_skeleton_proj.txt
+│   │   │       ├── a09_s04_e01_skeleton_proj.txt
+│   │   │       ├── a09_s04_e02_skeleton_proj.txt
+│   │   │       ├── a09_s05_e01_skeleton_proj.txt
+│   │   │       ├── a09_s05_e02_skeleton_proj.txt
+│   │   │       ├── a09_s06_e01_skeleton_proj.txt
+│   │   │       ├── a09_s06_e02_skeleton_proj.txt
+│   │   │       ├── a09_s07_e01_skeleton_proj.txt
+│   │   │       ├── a09_s07_e02_skeleton_proj.txt
+│   │   │       ├── a09_s08_e01_skeleton_proj.txt
+│   │   │       ├── a09_s08_e02_skeleton_proj.txt
+│   │   │       ├── a09_s09_e01_skeleton_proj.txt
+│   │   │       ├── a09_s09_e02_skeleton_proj.txt
+│   │   │       ├── a09_s10_e01_skeleton_proj.txt
+│   │   │       ├── a09_s10_e02_skeleton_proj.txt
+│   │   │       ├── a10_s01_e01_skeleton_proj.txt
+│   │   │       ├── a10_s01_e02_skeleton_proj.txt
+│   │   │       ├── a10_s02_e01_skeleton_proj.txt
+│   │   │       ├── a10_s02_e02_skeleton_proj.txt
+│   │   │       ├── a10_s03_e01_skeleton_proj.txt
+│   │   │       ├── a10_s03_e02_skeleton_proj.txt
+│   │   │       ├── a10_s04_e01_skeleton_proj.txt
+│   │   │       ├── a10_s04_e02_skeleton_proj.txt
+│   │   │       ├── a10_s05_e01_skeleton_proj.txt
+│   │   │       ├── a10_s05_e02_skeleton_proj.txt
+│   │   │       ├── a10_s06_e01_skeleton_proj.txt
+│   │   │       ├── a10_s06_e02_skeleton_proj.txt
+│   │   │       ├── a10_s07_e01_skeleton_proj.txt
+│   │   │       ├── a10_s07_e02_skeleton_proj.txt
+│   │   │       ├── a10_s08_e01_skeleton_proj.txt
+│   │   │       ├── a10_s08_e02_skeleton_proj.txt
+│   │   │       ├── a10_s09_e01_skeleton_proj.txt
+│   │   │       ├── a10_s09_e02_skeleton_proj.txt
+│   │   │       ├── a10_s10_e01_skeleton_proj.txt
+│   │   │       ├── a10_s10_e02_skeleton_proj.txt
+│   │   │       ├── a11_s01_e01_skeleton_proj.txt
+│   │   │       ├── a11_s01_e02_skeleton_proj.txt
+│   │   │       ├── a11_s02_e01_skeleton_proj.txt
+│   │   │       ├── a11_s02_e02_skeleton_proj.txt
+│   │   │       ├── a11_s03_e01_skeleton_proj.txt
+│   │   │       ├── a11_s03_e02_skeleton_proj.txt
+│   │   │       ├── a11_s04_e01_skeleton_proj.txt
+│   │   │       ├── a11_s04_e02_skeleton_proj.txt
+│   │   │       ├── a11_s05_e01_skeleton_proj.txt
+│   │   │       ├── a11_s05_e02_skeleton_proj.txt
+│   │   │       ├── a11_s06_e01_skeleton_proj.txt
+│   │   │       ├── a11_s06_e02_skeleton_proj.txt
+│   │   │       ├── a11_s07_e01_skeleton_proj.txt
+│   │   │       ├── a11_s07_e02_skeleton_proj.txt
+│   │   │       ├── a11_s08_e01_skeleton_proj.txt
+│   │   │       ├── a11_s08_e02_skeleton_proj.txt
+│   │   │       ├── a11_s09_e01_skeleton_proj.txt
+│   │   │       ├── a11_s09_e02_skeleton_proj.txt
+│   │   │       ├── a11_s10_e01_skeleton_proj.txt
+│   │   │       ├── a11_s10_e02_skeleton_proj.txt
+│   │   │       ├── a12_s01_e01_skeleton_proj.txt
+│   │   │       ├── a12_s01_e02_skeleton_proj.txt
+│   │   │       ├── a12_s02_e01_skeleton_proj.txt
+│   │   │       ├── a12_s02_e02_skeleton_proj.txt
+│   │   │       ├── a12_s03_e01_skeleton_proj.txt
+│   │   │       ├── a12_s03_e02_skeleton_proj.txt
+│   │   │       ├── a12_s04_e01_skeleton_proj.txt
+│   │   │       ├── a12_s04_e02_skeleton_proj.txt
+│   │   │       ├── a12_s05_e01_skeleton_proj.txt
+│   │   │       ├── a12_s05_e02_skeleton_proj.txt
+│   │   │       ├── a12_s06_e01_skeleton_proj.txt
+│   │   │       ├── a12_s06_e02_skeleton_proj.txt
+│   │   │       ├── a12_s07_e01_skeleton_proj.txt
+│   │   │       ├── a12_s07_e02_skeleton_proj.txt
+│   │   │       ├── a12_s08_e01_skeleton_proj.txt
+│   │   │       ├── a12_s08_e02_skeleton_proj.txt
+│   │   │       ├── a12_s09_e01_skeleton_proj.txt
+│   │   │       ├── a12_s09_e02_skeleton_proj.txt
+│   │   │       ├── a12_s10_e01_skeleton_proj.txt
+│   │   │       ├── a12_s10_e02_skeleton_proj.txt
+│   │   │       ├── a13_s01_e01_skeleton_proj.txt
+│   │   │       ├── a13_s01_e02_skeleton_proj.txt
+│   │   │       ├── a13_s02_e01_skeleton_proj.txt
+│   │   │       ├── a13_s02_e02_skeleton_proj.txt
+│   │   │       ├── a13_s03_e01_skeleton_proj.txt
+│   │   │       ├── a13_s03_e02_skeleton_proj.txt
+│   │   │       ├── a13_s04_e01_skeleton_proj.txt
+│   │   │       ├── a13_s04_e02_skeleton_proj.txt
+│   │   │       ├── a13_s05_e01_skeleton_proj.txt
+│   │   │       ├── a13_s05_e02_skeleton_proj.txt
+│   │   │       ├── a13_s06_e01_skeleton_proj.txt
+│   │   │       ├── a13_s06_e02_skeleton_proj.txt
+│   │   │       ├── a13_s07_e01_skeleton_proj.txt
+│   │   │       ├── a13_s07_e02_skeleton_proj.txt
+│   │   │       ├── a13_s08_e01_skeleton_proj.txt
+│   │   │       ├── a13_s08_e02_skeleton_proj.txt
+│   │   │       ├── a13_s09_e01_skeleton_proj.txt
+│   │   │       ├── a13_s09_e02_skeleton_proj.txt
+│   │   │       ├── a13_s10_e01_skeleton_proj.txt
+│   │   │       ├── a13_s10_e02_skeleton_proj.txt
+│   │   │       ├── a14_s01_e01_skeleton_proj.txt
+│   │   │       ├── a14_s01_e02_skeleton_proj.txt
+│   │   │       ├── a14_s02_e01_skeleton_proj.txt
+│   │   │       ├── a14_s02_e02_skeleton_proj.txt
+│   │   │       ├── a14_s03_e01_skeleton_proj.txt
+│   │   │       ├── a14_s03_e02_skeleton_proj.txt
+│   │   │       ├── a14_s04_e01_skeleton_proj.txt
+│   │   │       ├── a14_s04_e02_skeleton_proj.txt
+│   │   │       ├── a14_s05_e01_skeleton_proj.txt
+│   │   │       ├── a14_s05_e02_skeleton_proj.txt
+│   │   │       ├── a14_s06_e01_skeleton_proj.txt
+│   │   │       ├── a14_s06_e02_skeleton_proj.txt
+│   │   │       ├── a14_s07_e01_skeleton_proj.txt
+│   │   │       ├── a14_s07_e02_skeleton_proj.txt
+│   │   │       ├── a14_s08_e01_skeleton_proj.txt
+│   │   │       ├── a14_s08_e02_skeleton_proj.txt
+│   │   │       ├── a14_s09_e01_skeleton_proj.txt
+│   │   │       ├── a14_s09_e02_skeleton_proj.txt
+│   │   │       ├── a14_s10_e01_skeleton_proj.txt
+│   │   │       ├── a14_s10_e02_skeleton_proj.txt
+│   │   │       ├── a15_s01_e01_skeleton_proj.txt
+│   │   │       ├── a15_s01_e02_skeleton_proj.txt
+│   │   │       ├── a15_s02_e01_skeleton_proj.txt
+│   │   │       ├── a15_s02_e02_skeleton_proj.txt
+│   │   │       ├── a15_s03_e01_skeleton_proj.txt
+│   │   │       ├── a15_s03_e02_skeleton_proj.txt
+│   │   │       ├── a15_s04_e01_skeleton_proj.txt
+│   │   │       ├── a15_s04_e02_skeleton_proj.txt
+│   │   │       ├── a15_s05_e01_skeleton_proj.txt
+│   │   │       ├── a15_s05_e02_skeleton_proj.txt
+│   │   │       ├── a15_s06_e01_skeleton_proj.txt
+│   │   │       ├── a15_s06_e02_skeleton_proj.txt
+│   │   │       ├── a15_s07_e01_skeleton_proj.txt
+│   │   │       ├── a15_s07_e02_skeleton_proj.txt
+│   │   │       ├── a15_s08_e01_skeleton_proj.txt
+│   │   │       ├── a15_s08_e02_skeleton_proj.txt
+│   │   │       ├── a15_s09_e01_skeleton_proj.txt
+│   │   │       ├── a15_s09_e02_skeleton_proj.txt
+│   │   │       ├── a15_s10_e01_skeleton_proj.txt
+│   │   │       ├── a15_s10_e02_skeleton_proj.txt
+│   │   │       ├── a16_s01_e01_skeleton_proj.txt
+│   │   │       ├── a16_s01_e02_skeleton_proj.txt
+│   │   │       ├── a16_s02_e01_skeleton_proj.txt
+│   │   │       ├── a16_s02_e02_skeleton_proj.txt
+│   │   │       ├── a16_s03_e01_skeleton_proj.txt
+│   │   │       ├── a16_s03_e02_skeleton_proj.txt
+│   │   │       ├── a16_s04_e01_skeleton_proj.txt
+│   │   │       ├── a16_s04_e02_skeleton_proj.txt
+│   │   │       ├── a16_s05_e01_skeleton_proj.txt
+│   │   │       ├── a16_s05_e02_skeleton_proj.txt
+│   │   │       ├── a16_s06_e01_skeleton_proj.txt
+│   │   │       ├── a16_s06_e02_skeleton_proj.txt
+│   │   │       ├── a16_s07_e01_skeleton_proj.txt
+│   │   │       ├── a16_s07_e02_skeleton_proj.txt
+│   │   │       ├── a16_s08_e01_skeleton_proj.txt
+│   │   │       ├── a16_s08_e02_skeleton_proj.txt
+│   │   │       ├── a16_s09_e01_skeleton_proj.txt
+│   │   │       ├── a16_s09_e02_skeleton_proj.txt
+│   │   │       ├── a16_s10_e01_skeleton_proj.txt
+│   │   │       └── a16_s10_e02_skeleton_proj.txt
+│   │   └── labels.png
+│   ├── movingpose
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   │   └── __init__.cpython-38.pyc
+│   │   ├── estimator
+│   │   │   ├── __init__.py
+│   │   │   ├── __pycache__
+│   │   │   │   ├── __init__.cpython-38.pyc
+│   │   │   │   ├── classifiers.cpython-38.pyc
+│   │   │   │   └── neighbors.cpython-38.pyc
+│   │   │   ├── classifiers.py
+│   │   │   └── neighbors.py
+│   │   ├── logic
+│   │   │   ├── __init__.py
+│   │   │   ├── __pycache__
+│   │   │   │   ├── __init__.cpython-38.pyc
+│   │   │   │   ├── iterators.cpython-38.pyc
+│   │   │   │   └── metrics.cpython-38.pyc
+│   │   │   ├── iterators.py
+│   │   │   └── metrics.py
+│   │   └── preprocessing
+│   │       ├── README.md
+│   │       ├── __pycache__
+│   │       │   ├── gaussian_filter.cpython-38.pyc
+│   │       │   ├── kinect_skeleton_data.cpython-38.pyc
+│   │       │   └── moving_pose.cpython-38.pyc
+│   │       ├── gaussian_filter.py
+│   │       ├── kinect_skeleton_data.py
+│   │       └── moving_pose.py
+│   ├── pickle
+│   │   └── c7f7094d
+│   │       ├── action_classifier_cache-5000.p
+│   │       └── prediction-n50_theta0.5_nearest_pose_estimatoralpha0.75_beta0.6_kappa10_n_neighbors100_n_training_ne.p
+│   ├── record_frame_count.txt
+│   ├── vc142.idb
+│   └── vc142.pdb
+├── RCa07640
+├── README.md
+├── SkeletonBasics-D2D.sln
+├── SkeletonBasics-D2D.vcxproj
+├── SkeletonBasics-D2D.vcxproj.user
+├── SkeletonBasics.aps
+├── SkeletonBasics.cpp
+├── SkeletonBasics.h
+├── SkeletonBasics.rc
+├── app.ico
+├── desktop.ini
+├── resource.h
+├── stdafx.h
+└── tree.txt
+

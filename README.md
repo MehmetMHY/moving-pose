@@ -19,6 +19,7 @@
 - To achieve this goal, we implmented the Moving Pose algorithm from the paper stated below and the database stated below.
 - This is our Fall 2020 CSCI470 (Introduction to Machine Learning) final Project. CSCI470 is an undergraduate class provided at the Colorado School of Mines. Our team name was: Nestlé.
 - Please view /movingpose/gui/README.md to learn more about the GUI and the hardware(s) used.
+- You can grab the weights used in the presentation/demo here: https://github.com/MehmetMHY/moving-pose/releases/tag/weights
 
 ## Paper Implemented:
 
@@ -31,3 +32,4 @@
 - We used the MSR DailyActivity 3D Dataset dataset: [Dataset_Source](https://wangjiangb.github.io/my_data.html)
 - Multiview Action 3D Dataset Action IDs:
   <img width="701" alt="3" src="./assets/ma3da_ids.png">
+
